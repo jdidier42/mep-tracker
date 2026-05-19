@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suivi MEP — OneOrtho Medical</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#F0EDE3;min-height:100vh;padding:1.5rem}
+.app{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.header{background:#004B32;border-radius:12px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.logo{font-family:'Sora',sans-serif;font-weight:700;font-size:17px;color:#AAE66E;line-height:1.2}
+.logo-sub{font-weight:400;color:#fff;font-size:11px;display:block;opacity:.6;margin-top:1px}
+.header-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:7px 14px;border-radius:8px;border:1.5px solid rgba(0,0,0,0.18);background:#fff;color:#1a1a1a;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s;line-height:1}
+.btn:hover{background:#f0ede3;border-color:rgba(0,0,0,0.3)}
+.btn-primary{background:#004B32;color:#fff;border-color:#004B32}
+.btn-primary:hover{background:#003825;border-color:#003825}
+.btn-ghost{background:transparent;color:#AAE66E;border-color:rgba(170,230,110,0.5)}
+.btn-ghost:hover{background:rgba(170,230,110,0.12);border-color:#AAE66E}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-icon{padding:6px 8px;min-width:32px;justify-content:center}
+.toolbar{background:#fff;border-radius:10px;border:1px solid rgba(0,0,0,0.1);padding:10px 14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.toolbar select{font-family:'DM Sans',sans-serif;font-size:13px;padding:6px 10px;border-radius:7px;border:1px solid rgba(0,0,0,0.18);background:#fff;color:#1a1a1a;cursor:pointer}
+.cal-nav{display:flex;align-items:center;gap:8px}
+.cal-month{font-family:'Sora',sans-serif;font-weight:600;font-size:14px;color:#1a1a1a;min-width:145px;text-align:center}
+.views{display:flex;gap:4px;margin-left:auto}
+.view-btn{padding:6px 10px;border-radius:7px;border:1px solid rgba(0,0,0,0.15);background:transparent;font-size:13px;cursor:pointer;color:#888;transition:all .15s}
+.view-btn.active{background:#004B32;color:#fff;border-color:#004B32}
+.legend-bar{background:#fff;border-radius:10px;border:1px solid rgba(0,0,0,0.1);padding:8px 14px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;min-height:42px}
+.legend-label{font-size:11px;color:#aaa;font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-right:4px;flex-shrink:0}
+.legend-chip{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#444;cursor:pointer;padding:4px 10px;border-radius:99px;border:1.5px solid transparent;transition:all .15s;background:#f7f5ef}
+.legend-chip:hover{border-color:rgba(0,0,0,0.25)}
+.legend-chip.active{border-color:currentColor;background:#fff}
+.legend-chip-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.legend-clear{font-size:11px;color:#888;cursor:pointer;padding:4px 8px;border-radius:6px;border:1px solid rgba(0,0,0,0.15);background:transparent;margin-left:2px}
+.legend-clear:hover{background:#f0ede3}
+.legend-count{margin-left:auto;font-size:12px;color:#aaa;white-space:nowrap}
+.calendar{background:#fff;border-radius:12px;border:1px solid rgba(0,0,0,0.1);overflow:hidden}
+.cal-head{display:grid;grid-template-columns:repeat(7,1fr);background:#f7f5ef;border-bottom:1px solid rgba(0,0,0,0.1)}
+.cal-day-label{text-align:center;padding:9px 4px;font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.6px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr)}
+.cal-cell{min-height:84px;border-right:1px solid rgba(0,0,0,0.07);border-bottom:1px solid rgba(0,0,0,0.07);padding:6px;cursor:pointer;transition:background .1s}
+.cal-cell:nth-child(7n){border-right:none}
+.cal-cell:hover{background:#f7f5ef}
+.cal-cell.empty{background:#f0ede3;cursor:default}
+.day-num{font-size:12px;color:#aaa;margin-bottom:4px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:500}
+.day-num.today{background:#004B32;color:#fff}
+.event-pill{font-size:10px;font-weight:600;padding:3px 7px;border-radius:99px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;transition:opacity .1s}
+.event-pill:hover{opacity:.75}
+.more-link{font-size:10px;color:#bbb;cursor:pointer;padding:1px 3px}
+.list-view{display:flex;flex-direction:column;gap:6px}
+.list-item{display:flex;align-items:center;gap:12px;padding:11px 16px;border:1px solid rgba(0,0,0,0.1);border-radius:9px;cursor:pointer;background:#fff;transition:background .1s}
+.list-item:hover{background:#f7f5ef}
+.list-date{font-size:11px;color:#aaa;min-width:52px;flex-shrink:0;font-weight:500}
+.list-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.list-name{font-size:13px;font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#1a1a1a}
+.tag{display:inline-block;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:600;flex-shrink:0}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem}
+.modal{background:#fff;border-radius:14px;padding:1.75rem;width:440px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.18)}
+.modal-title{font-family:'Sora',sans-serif;font-size:16px;font-weight:600;color:#1a1a1a;margin-bottom:1.25rem}
+.f-label{font-size:12px;color:#666;display:block;margin-bottom:4px;margin-top:12px;font-weight:500}
+.f-input{width:100%;font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 11px;border-radius:8px;border:1.5px solid rgba(0,0,0,0.18);background:#f7f5ef;color:#1a1a1a;transition:border-color .15s}
+.f-input:focus{outline:none;border-color:#004B32;background:#fff}
+.f-textarea{width:100%;font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 11px;border-radius:8px;border:1.5px solid rgba(0,0,0,0.18);background:#f7f5ef;color:#1a1a1a;resize:vertical;min-height:60px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(0,0,0,0.08)}
+.detail-row{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.07);font-size:13px;color:#1a1a1a}
+.detail-row:last-child{border-bottom:none}
+.detail-label{color:#888;min-width:95px;font-size:12px;flex-shrink:0;font-weight:500;padding-top:2px}
+/* Sélecteur multi-produits */
+.prod-picker{display:flex;flex-direction:column;gap:6px;padding:8px;background:#f7f5ef;border-radius:8px;border:1.5px solid rgba(0,0,0,0.18);max-height:160px;overflow-y:auto}
+.prod-check{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:6px;cursor:pointer;transition:background .1s;user-select:none}
+.prod-check:hover{background:#ede9e0}
+.prod-check input[type=checkbox]{width:15px;height:15px;accent-color:#004B32;cursor:pointer;flex-shrink:0}
+.prod-check-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.prod-check-name{font-size:13px;color:#1a1a1a}
+.prod-tags{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+/* Settings */
+.settings-panel{background:#fff;border-radius:12px;border:1px solid rgba(0,0,0,0.1);overflow:hidden}
+.stabs{display:flex;background:#f7f5ef;border-bottom:1px solid rgba(0,0,0,0.1)}
+.stab{padding:12px 20px;font-size:13px;font-weight:500;cursor:pointer;color:#888;border-bottom:2.5px solid transparent;margin-bottom:-1px;display:flex;align-items:center;gap:7px;transition:all .15s;white-space:nowrap}
+.stab:hover:not(.active){color:#1a1a1a}
+.stab.active{color:#004B32;border-bottom-color:#004B32;background:#fff}
+.sbody{padding:1.5rem}
+.section-title{font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.section-count{font-family:'DM Sans',sans-serif;font-weight:400;font-size:13px;color:#aaa;background:#ede9e0;padding:2px 9px;border-radius:99px}
+.entity-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.entity-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:10px;background:#fafaf7}
+.entity-row:hover{border-color:rgba(0,0,0,0.2);background:#f5f3ec}
+.e-dot{width:20px;height:20px;border-radius:50%;flex-shrink:0;border:2px solid rgba(0,0,0,0.1)}
+.e-name{flex:1;font-size:14px;font-weight:500;color:#1a1a1a}
+.e-count{font-size:11px;color:#aaa;background:#ede9e0;padding:2px 8px;border-radius:99px;flex-shrink:0}
+.e-actions{display:flex;gap:6px;flex-shrink:0}
+.act-edit{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;border:1.5px solid rgba(0,0,0,0.18);background:#fff;cursor:pointer;color:#444;font-size:15px;transition:all .15s}
+.act-edit:hover{background:#e8f5e9;border-color:#004B32;color:#004B32}
+.act-del{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;border:1.5px solid rgba(226,75,74,0.4);background:#fff8f8;cursor:pointer;color:#E24B4A;font-size:15px;transition:all .15s}
+.act-del:hover{background:#E24B4A;border-color:#E24B4A;color:#fff}
+.add-zone{background:#f3f1ea;border-radius:10px;padding:14px 16px;border:1.5px dashed rgba(0,0,0,0.15);margin-top:4px}
+.add-zone-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
+.add-row{display:flex;gap:8px;align-items:center}
+.cpick{width:40px;height:38px;border:1.5px solid rgba(0,0,0,0.18);border-radius:8px;cursor:pointer;padding:3px;background:#fff;flex-shrink:0}
+.add-input{flex:1;font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 11px;border-radius:8px;border:1.5px solid rgba(0,0,0,0.18);background:#fff;color:#1a1a1a;transition:border-color .15s}
+.add-input:focus{outline:none;border-color:#004B32}
+.inline-edit-row{display:flex;gap:8px;align-items:center;flex:1}
+.inline-edit-input{flex:1;font-family:'DM Sans',sans-serif;font-size:13px;padding:6px 10px;border-radius:8px;border:1.5px solid #AAE66E;background:#f0fce8;color:#1a1a1a;outline:none}
+.empty-state{text-align:center;padding:3rem 1.5rem;color:#888;font-size:13px;background:#fff;border-radius:12px;border:1px solid rgba(0,0,0,0.1);line-height:1.6}
+.empty-state i{font-size:40px;display:block;margin-bottom:12px;color:#ccc}
+.empty-strong{font-weight:600;color:#444;background:#ede9e0;padding:1px 7px;border-radius:5px}
+.no-entries{font-size:13px;color:#bbb;padding:10px 0;font-style:italic}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<script>
+const STATUSES=[
+  {key:'planned',label:'Planifiée',color:'#378ADD',bg:'#e6f1fb'},
+  {key:'in_progress',label:'En cours',color:'#BA7517',bg:'#faeeda'},
+  {key:'done',label:'Déployée',color:'#004B32',bg:'#e1f5ee'},
+  {key:'failed',label:'Échouée',color:'#A32D2D',bg:'#fcebeb'},
+  {key:'rollback',label:'Rollback',color:'#702D5A',bg:'#f5e8f2'}
+];
+function stOf(k){return STATUSES.find(s=>s.key===k)||STATUSES[0]}
+
+let products=[],clients=[],releases=[];
+let nextId=1,nextPid=1,nextCid=1;
+
+function prodById(id){return products.find(p=>p.id===id)}
+function clientById(id){return clients.find(c=>c.id===id)}
+function clientColor(cid){return(clientById(cid)||{color:'#aaa'}).color}
+
+/* productIds est maintenant un tableau */
+let S={
+  year:new Date().getFullYear(),month:new Date().getMonth(),
+  filterClient:'all',filterStatus:'all',
+  view:'calendar',page:'main',stab:'clients',
+  modal:null,editId:null,detailId:null,
+  form:{name:'',productIds:[],clientId:'',date:'',env:'Production',status:'planned',note:''},
+  editingProdId:null,editingProdName:'',editingProdColor:'',
+  editingClientId:null,editingClientName:'',editingClientColor:'',
+  newProdName:'',newProdColor:'#9F8AEA',
+  newClientName:'',newClientColor:'#AAE66E',
+};
+
+function filtered(){
+  return releases.filter(r=>{
+    if(S.filterClient!=='all'&&r.clientId!==S.filterClient)return false;
+    if(S.filterStatus!=='all'&&r.status!==S.filterStatus)return false;
+    return true;
+  });
+}
+
+function toggleProd(pid){
+  const ids=S.form.productIds;
+  S.form.productIds=ids.includes(pid)?ids.filter(x=>x!==pid):[...ids,pid];
+  render();
+}
+
+function prodTagsHtml(productIds){
+  if(!productIds||!productIds.length)return`<span style="color:#bbb;font-size:12px;font-style:italic">Aucun</span>`;
+  return productIds.map(pid=>{
+    const p=prodById(pid);if(!p)return'';
+    return`<span class="tag" style="background:#ede9e0;color:#444">${p.name}</span>`;
+  }).join('');
+}
+
+function renderCalendar(){
+  const dim=new Date(S.year,S.month+1,0).getDate();
+  const sd=new Date(S.year,S.month,1).getDay()||7;
+  const today=new Date();
+  const byDay={};
+  filtered().forEach(r=>{
+    const rd=new Date(r.date+'T00:00:00');
+    if(rd.getFullYear()===S.year&&rd.getMonth()===S.month){
+      const k=rd.getDate();if(!byDay[k])byDay[k]=[];byDay[k].push(r);
+    }
+  });
+  const labels=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+  let cells='';
+  for(let i=1;i<sd;i++)cells+=`<div class="cal-cell empty"></div>`;
+  for(let d=1;d<=dim;d++){
+    const isT=today.getDate()===d&&today.getMonth()===S.month&&today.getFullYear()===S.year;
+    const dr=byDay[d]||[];const show=dr.slice(0,2);const more=dr.length-2;
+    cells+=`<div class="cal-cell" onclick="clickDay(${d})">
+      <div class="day-num${isT?' today':''}">${d}</div>
+      ${show.map(r=>{
+        const c=clientColor(r.clientId);
+        const pids=r.productIds||[];
+        const label=r.name+(pids.length>1?` (${pids.length})`:'');
+        return`<div class="event-pill" style="background:${c}28;color:${c};border:1px solid ${c}66" onclick="event.stopPropagation();openDetail(${r.id})" title="${pids.map(id=>{const p=prodById(id);return p?p.name:''}).join(', ')}">${label}</div>`;
+      }).join('')}
+      ${more>0?`<div class="more-link">+${more} autres</div>`:''}
+    </div>`;
+  }
+  return`<div class="calendar">
+    <div class="cal-head">${labels.map(l=>`<div class="cal-day-label">${l}</div>`).join('')}</div>
+    <div class="cal-grid">${cells}</div>
+  </div>`;
+}
+
+function renderList(){
+  const filt=filtered().sort((a,b)=>a.date.localeCompare(b.date));
+  if(!filt.length)return`<div class="empty-state"><i class="ti ti-list-search"></i>Aucune mise en production pour cette sélection</div>`;
+  return`<div class="list-view">${filt.map(r=>{
+    const st=stOf(r.status);const c=clientColor(r.clientId);
+    const cli=clientById(r.clientId);
+    const pids=r.productIds||[];
+    return`<div class="list-item" onclick="openDetail(${r.id})">
+      <div class="list-date">${r.date.slice(5).replace('-','/')}</div>
+      <div class="list-dot" style="background:${c}"></div>
+      <div class="list-name">${r.name}</div>
+      <div style="display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap;align-items:center">
+        <span class="tag" style="background:${st.bg};color:${st.color}">${st.label}</span>
+        ${cli?`<span class="tag" style="background:${c}22;color:${c}">${cli.name}</span>`:''}
+        ${pids.map(pid=>{const p=prodById(pid);return p?`<span class="tag" style="background:#ede9e0;color:#555">${p.name}</span>`:''}).join('')}
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function renderModal(){
+  if(!S.modal)return'';
+  if(S.modal==='form'){
+    const f=S.form;const isEdit=!!S.editId;
+    const pickerHtml=products.length?`<div class="prod-picker">${products.map(p=>{
+      const checked=(f.productIds||[]).includes(p.id);
+      return`<label class="prod-check">
+        <input type="checkbox" ${checked?'checked':''} onchange="toggleProd('${p.id}')">
+        <div class="prod-check-dot" style="background:${p.color}"></div>
+        <span class="prod-check-name">${p.name}</span>
+      </label>`;
+    }).join('')}</div>`:`<p style="font-size:12px;color:#bbb;padding:6px 0;font-style:italic">Aucun produit — ajoutez-en dans Configurer</p>`;
+    return`<div class="modal-overlay" onclick="cModal(event)"><div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-title">${isEdit?'Modifier la MEP':'Nouvelle mise en production'}</div>
+      <span class="f-label">Nom / version</span>
+      <input class="f-input" type="text" value="${f.name}" oninput="sf('name',this.value)" placeholder="Ex: Déploiement v2.5">
+      <span class="f-label">Client</span>
+      ${clients.length?`<select class="f-input" onchange="sf('clientId',this.value)">${clients.map(c=>`<option value="${c.id}"${f.clientId===c.id?' selected':''}>${c.name}</option>`).join('')}</select>`:`<p style="font-size:12px;color:#bbb;padding:6px 0;font-style:italic">Aucun client — ajoutez-en dans Configurer</p>`}
+      <span class="f-label">Produits <span style="font-weight:400;color:#aaa">(sélectionnez un ou plusieurs)</span></span>
+      ${pickerHtml}
+      <span class="f-label">Date de mise en production</span>
+      <input class="f-input" type="date" value="${f.date}" onchange="sf('date',this.value)">
+      <span class="f-label">Environnement</span>
+      <select class="f-input" onchange="sf('env',this.value)">${['Staging','Pre-prod','Production'].map(e=>`<option${f.env===e?' selected':''}>${e}</option>`).join('')}</select>
+      <span class="f-label">Statut</span>
+      <select class="f-input" onchange="sf('status',this.value)">${STATUSES.map(s=>`<option value="${s.key}"${f.status===s.key?' selected':''}>${s.label}</option>`).join('')}</select>
+      <span class="f-label">Note</span>
+      <textarea class="f-textarea" oninput="sf('note',this.value)" placeholder="Commentaire, lien JIRA...">${f.note||''}</textarea>
+      <div class="modal-actions">
+        <button class="btn" onclick="cModal()">Annuler</button>
+        ${isEdit?`<button class="btn" style="color:#E24B4A;border-color:rgba(226,75,74,0.4)" onclick="delRelease(${S.editId})"><i class="ti ti-trash"></i> Supprimer</button>`:''}
+        <button class="btn btn-primary" onclick="saveRelease()"><i class="ti ti-check"></i> ${isEdit?'Enregistrer':'Ajouter'}</button>
+      </div>
+    </div></div>`;
+  }
+  if(S.modal==='detail'){
+    const r=releases.find(x=>x.id===S.detailId);if(!r)return'';
+    const st=stOf(r.status);const c=clientColor(r.clientId);
+    const cli=clientById(r.clientId);
+    const pids=r.productIds||[];
+    return`<div class="modal-overlay" onclick="cModal(event)"><div class="modal" onclick="event.stopPropagation()">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
+        <div class="modal-title" style="margin:0">${r.name}</div>
+        <button class="btn btn-sm" onclick="openEdit(${r.id})"><i class="ti ti-edit"></i> Modifier</button>
+      </div>
+      <div style="display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:99px;font-size:12px;font-weight:600;margin-bottom:14px;background:${st.bg};color:${st.color}">
+        <span style="width:8px;height:8px;border-radius:50%;background:${st.color};display:inline-block"></span>${st.label}
+      </div>
+      <div class="detail-row"><span class="detail-label">Client</span>${cli?`<span class="tag" style="background:${c}22;color:${c}">${cli.name}</span>`:'-'}</div>
+      <div class="detail-row"><span class="detail-label">Produits</span><div class="prod-tags">${prodTagsHtml(pids)}</div></div>
+      <div class="detail-row"><span class="detail-label">Date</span><span>${new Date(r.date+'T00:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</span></div>
+      <div class="detail-row"><span class="detail-label">Environnement</span><span>${r.env}</span></div>
+      ${r.note?`<div class="detail-row"><span class="detail-label">Note</span><span style="color:#666">${r.note}</span></div>`:''}
+      <div class="modal-actions"><button class="btn" onclick="cModal()">Fermer</button></div>
+    </div></div>`;
+  }
+  return'';
+}
+
+function renderSettings(){
+  const tab=S.stab;
+  const usageC=id=>releases.filter(r=>r.clientId===id).length;
+  const usageP=id=>releases.filter(r=>(r.productIds||[]).includes(id)).length;
+  let body='';
+  if(tab==='clients'){
+    const rows=clients.map(c=>{
+      const n=usageC(c.id);
+      if(S.editingClientId===c.id)return`<div class="entity-row">
+        <input type="color" class="cpick" value="${S.editingClientColor}" oninput="S.editingClientColor=this.value">
+        <div class="inline-edit-row">
+          <input class="inline-edit-input" type="text" value="${S.editingClientName}" oninput="S.editingClientName=this.value" onkeydown="if(event.key==='Enter')saveClient('${c.id}')">
+          <button class="btn btn-primary btn-sm" onclick="saveClient('${c.id}')"><i class="ti ti-check"></i> OK</button>
+          <button class="btn btn-sm" onclick="S.editingClientId=null;render()"><i class="ti ti-x"></i></button>
+        </div>
+      </div>`;
+      return`<div class="entity-row">
+        <div class="e-dot" style="background:${c.color}"></div>
+        <span class="e-name">${c.name}</span>
+        <span class="e-count">${n} MEP${n>1?'s':''}</span>
+        <div class="e-actions">
+          <button class="act-edit" title="Renommer" onclick="startEditClient('${c.id}')"><i class="ti ti-pencil"></i></button>
+          <button class="act-del" title="Supprimer" onclick="deleteClient('${c.id}')"><i class="ti ti-trash"></i></button>
+        </div>
+      </div>`;
+    }).join('');
+    body=`<div class="section-title">Clients <span class="section-count">${clients.length}</span></div>
+    <div class="entity-list">${rows||`<p class="no-entries">Aucun client — ajoutez-en ci-dessous</p>`}</div>
+    <div class="add-zone"><div class="add-zone-label">Ajouter un client</div>
+      <div class="add-row">
+        <input type="color" class="cpick" value="${S.newClientColor}" oninput="S.newClientColor=this.value" title="Couleur">
+        <input class="add-input" type="text" value="${S.newClientName}" oninput="S.newClientName=this.value" placeholder="Nom du client" onkeydown="if(event.key==='Enter')addClient()">
+        <button class="btn btn-primary" onclick="addClient()"><i class="ti ti-plus"></i> Ajouter</button>
+      </div>
+    </div>`;
+  } else if(tab==='products'){
+    const rows=products.map(p=>{
+      const n=usageP(p.id);
+      if(S.editingProdId===p.id)return`<div class="entity-row">
+        <input type="color" class="cpick" value="${S.editingProdColor}" oninput="S.editingProdColor=this.value">
+        <div class="inline-edit-row">
+          <input class="inline-edit-input" type="text" value="${S.editingProdName}" oninput="S.editingProdName=this.value" onkeydown="if(event.key==='Enter')saveProd('${p.id}')">
+          <button class="btn btn-primary btn-sm" onclick="saveProd('${p.id}')"><i class="ti ti-check"></i> OK</button>
+          <button class="btn btn-sm" onclick="S.editingProdId=null;render()"><i class="ti ti-x"></i></button>
+        </div>
+      </div>`;
+      return`<div class="entity-row">
+        <div class="e-dot" style="background:${p.color}"></div>
+        <span class="e-name">${p.name}</span>
+        <span class="e-count">${n} MEP${n>1?'s':''}</span>
+        <div class="e-actions">
+          <button class="act-edit" title="Renommer" onclick="startEditProd('${p.id}')"><i class="ti ti-pencil"></i></button>
+          <button class="act-del" title="Supprimer" onclick="deleteProd('${p.id}')"><i class="ti ti-trash"></i></button>
+        </div>
+      </div>`;
+    }).join('');
+    body=`<div class="section-title">Produits <span class="section-count">${products.length}</span></div>
+    <div class="entity-list">${rows||`<p class="no-entries">Aucun produit — ajoutez-en ci-dessous</p>`}</div>
+    <div class="add-zone"><div class="add-zone-label">Ajouter un produit</div>
+      <div class="add-row">
+        <input type="color" class="cpick" value="${S.newProdColor}" oninput="S.newProdColor=this.value" title="Couleur">
+        <input class="add-input" type="text" value="${S.newProdName}" oninput="S.newProdName=this.value" placeholder="Nom du produit" onkeydown="if(event.key==='Enter')addProd()">
+        <button class="btn btn-primary" onclick="addProd()"><i class="ti ti-plus"></i> Ajouter</button>
+      </div>
+    </div>`;
+  } else {
+    body=`<div class="section-title">Statuts</div>
+    <div class="entity-list">${STATUSES.map(s=>`<div class="entity-row">
+      <div class="e-dot" style="background:${s.color}"></div>
+      <span class="e-name">${s.label}</span>
+      <span class="e-count">${releases.filter(r=>r.status===s.key).length} MEP</span>
+    </div>`).join('')}</div>
+    <p style="font-size:12px;color:#bbb;font-style:italic">Statuts fixes — définis par le processus MDR.</p>`;
+  }
+  return`<div class="settings-panel">
+    <div class="stabs">
+      <div class="stab${tab==='clients'?' active':''}" onclick="S.stab='clients';render()"><i class="ti ti-building-hospital"></i> Clients</div>
+      <div class="stab${tab==='products'?' active':''}" onclick="S.stab='products';render()"><i class="ti ti-box"></i> Produits</div>
+      <div class="stab${tab==='statuses'?' active':''}" onclick="S.stab='statuses';render()"><i class="ti ti-flag"></i> Statuts</div>
+    </div>
+    <div class="sbody">${body}</div>
+  </div>`;
+}
+
+function exportCSV(){
+  if(!releases.length){alert('Aucune MEP à exporter');return}
+  const rows=[['Nom','Client','Produits','Date','Environnement','Statut','Note']];
+  [...releases].sort((a,b)=>a.date.localeCompare(b.date)).forEach(r=>{
+    const cli=clientById(r.clientId);const st=stOf(r.status);
+    const prods=(r.productIds||[]).map(pid=>{const p=prodById(pid);return p?p.name:''}).filter(Boolean).join(' | ');
+    rows.push([r.name,cli?cli.name:'',prods,r.date,r.env,st.label,r.note||'']);
+  });
+  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='mep-oneortho.csv';a.click();
+  URL.revokeObjectURL(url);
+}
+
+function render(){
+  const months=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const filt=filtered();
+  const countM=filt.filter(r=>{const d=new Date(r.date+'T00:00:00');return d.getFullYear()===S.year&&d.getMonth()===S.month}).length;
+  const headerHtml=`<div class="header">
+    <div>
+      <div class="logo">OneOrtho <span>medical</span></div>
+      <span class="logo-sub">${S.page==='settings'?'Configuration':'Suivi des mises en production'}</span>
+    </div>
+    <div class="header-actions">
+      ${S.page==='settings'?
+        `<button class="btn btn-ghost" onclick="S.page='main';render()"><i class="ti ti-arrow-left"></i> Retour</button>`:
+        `<button class="btn btn-ghost" onclick="exportCSV()"><i class="ti ti-download"></i> Export CSV</button>
+         <button class="btn btn-ghost" onclick="S.page='settings';render()"><i class="ti ti-settings"></i> Configurer</button>
+         <button class="btn btn-primary" onclick="openAdd()"><i class="ti ti-plus"></i> Nouvelle MEP</button>`}
+    </div>
+  </div>`;
+  if(S.page==='settings'){document.getElementById('app').innerHTML=headerHtml+renderSettings()+renderModal();return;}
+  const legendHtml=clients.length?`<div class="legend-bar">
+    <span class="legend-label">Client</span>
+    ${clients.map(c=>{const a=S.filterClient===c.id;return`<div class="legend-chip${a?' active':''}" style="color:${c.color}" onclick="S.filterClient=S.filterClient==='${c.id}'?'all':'${c.id}';render()">
+      <div class="legend-chip-dot" style="background:${c.color}"></div>${c.name}
+    </div>`;}).join('')}
+    ${S.filterClient!=='all'?`<button class="legend-clear" onclick="S.filterClient='all';render()"><i class="ti ti-x"></i> Tout</button>`:''}
+    <span class="legend-count">${countM} MEP ce mois</span>
+  </div>`:'';
+  const mainHtml=releases.length===0?
+    `<div class="empty-state"><i class="ti ti-rocket"></i>Commencez par ajouter vos clients et produits dans <span class="empty-strong">Configurer</span>,<br>puis créez votre première MEP en cliquant sur <span class="empty-strong">+ Nouvelle MEP</span>.</div>`:
+    (S.view==='calendar'?renderCalendar():renderList());
+  document.getElementById('app').innerHTML=`${headerHtml}
+    <div class="toolbar">
+      <div class="cal-nav">
+        <button class="btn btn-icon" onclick="prevM()"><i class="ti ti-chevron-left"></i></button>
+        <span class="cal-month">${months[S.month]} ${S.year}</span>
+        <button class="btn btn-icon" onclick="nextM()"><i class="ti ti-chevron-right"></i></button>
+      </div>
+      <select onchange="S.filterStatus=this.value;render()">
+        <option value="all">Tous les statuts</option>
+        ${STATUSES.map(s=>`<option value="${s.key}"${S.filterStatus===s.key?' selected':''}>${s.label}</option>`).join('')}
+      </select>
+      <div class="views">
+        <button class="view-btn${S.view==='calendar'?' active':''}" onclick="S.view='calendar';render()"><i class="ti ti-calendar"></i></button>
+        <button class="view-btn${S.view==='list'?' active':''}" onclick="S.view='list';render()"><i class="ti ti-list"></i></button>
+      </div>
+    </div>
+    ${legendHtml}${mainHtml}${renderModal()}`;
+}
+
+function prevM(){if(S.month===0){S.month=11;S.year--}else S.month--;render()}
+function nextM(){if(S.month===11){S.month=0;S.year++}else S.month++;render()}
+function openAdd(){
+  const today=new Date().toISOString().slice(0,10);
+  S.form={name:'',productIds:[],clientId:clients[0]?.id||'',date:today,env:'Production',status:'planned',note:''};
+  S.editId=null;S.modal='form';render();
+}
+function openEdit(id){
+  const r=releases.find(x=>x.id===id);
+  S.form={...r,productIds:[...(r.productIds||[])]};
+  S.editId=id;S.modal='form';render();
+}
+function openDetail(id){S.detailId=id;S.modal='detail';render()}
+function cModal(e){if(e&&e.target!==e.currentTarget)return;S.modal=null;render()}
+function sf(k,v){S.form[k]=v}
+function saveRelease(){
+  if(!S.form.name||!S.form.date){alert('Nom et date requis');return}
+  if(!S.form.clientId&&clients.length)S.form.clientId=clients[0].id;
+  if(S.editId){const i=releases.findIndex(x=>x.id===S.editId);releases[i]={...S.form,id:S.editId}}
+  else releases.push({...S.form,id:nextId++});
+  S.modal=null;render();
+}
+function delRelease(id){releases=releases.filter(x=>x.id!==id);S.modal=null;render()}
+function clickDay(d){
+  const ds=`${S.year}-${String(S.month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  S.form={name:'',productIds:[],clientId:clients[0]?.id||'',date:ds,env:'Production',status:'planned',note:''};
+  S.editId=null;S.modal='form';render();
+}
+function startEditProd(id){const p=products.find(x=>x.id===id);S.editingProdId=id;S.editingProdName=p.name;S.editingProdColor=p.color;render()}
+function saveProd(id){
+  const name=S.editingProdName.trim();if(!name)return;
+  const i=products.findIndex(p=>p.id===id);products[i]={...products[i],name,color:S.editingProdColor};
+  S.editingProdId=null;render();
+}
+function deleteProd(id){
+  const n=releases.filter(r=>(r.productIds||[]).includes(id)).length;
+  const msg=n>0?`Ce produit est lié à ${n} MEP(s). Le retirer de toutes ces MEPs ?`:'Supprimer ce produit ?';
+  if(!confirm(msg))return;
+  releases=releases.map(r=>({...r,productIds:(r.productIds||[]).filter(x=>x!==id)}));
+  products=products.filter(p=>p.id!==id);render();
+}
+function addProd(){
+  const name=S.newProdName.trim();if(!name){alert('Saisissez un nom');return}
+  products.push({id:'p'+(nextPid++),name,color:S.newProdColor});
+  S.newProdName='';render();
+}
+function startEditClient(id){const c=clients.find(x=>x.id===id);S.editingClientId=id;S.editingClientName=c.name;S.editingClientColor=c.color;render()}
+function saveClient(id){
+  const name=S.editingClientName.trim();if(!name)return;
+  const i=clients.findIndex(c=>c.id===id);clients[i]={...clients[i],name,color:S.editingClientColor};
+  S.editingClientId=null;render();
+}
+function deleteClient(id){
+  const n=releases.filter(r=>r.clientId===id).length;
+  const msg=n>0?`Ce client est lié à ${n} MEP(s). Supprimer quand même (les MEPs seront aussi supprimées) ?`:'Supprimer ce client ?';
+  if(!confirm(msg))return;
+  releases=releases.filter(r=>r.clientId!==id);
+  if(S.filterClient===id)S.filterClient='all';
+  clients=clients.filter(c=>c.id!==id);render();
+}
+function addClient(){
+  const name=S.newClientName.trim();if(!name){alert('Saisissez un nom');return}
+  clients.push({id:'c'+(nextCid++),name,color:S.newClientColor});
+  S.newClientName='';render();
+}
+render();
+</script>
+</body>
+</html>
