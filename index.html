@@ -114,6 +114,31 @@ body{font-family:'DM Sans',sans-serif;background:#F0EDE3;min-height:100vh;paddin
 <body>
 <div class="app" id="app"></div>
 <script>
+const SB_URL='https://odsvvwmtlkglpjqeqjjq.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kc3Z2d210bGtnbHBqcWVxampxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTc2NjEsImV4cCI6MjA5NDkzMzY2MX0.aA2LxUE9N8ZYF_p4W2SEOyMS-OVIIlGPSRFGXZKKKMU';
+const H={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'};
+
+async function sbGet(table){
+  const r=await fetch(`${SB_URL}/rest/v1/${table}?select=*`,{headers:H});
+  return r.ok?r.json():[];
+}
+async function sbUpsert(table,row){
+  const r=await fetch(`${SB_URL}/rest/v1/${table}`,{method:'POST',headers:{...H,'Prefer':'resolution=merge-duplicates,return=representation'},body:JSON.stringify(row)});
+  return r.ok;
+}
+async function sbDelete(table,col,val){
+  const r=await fetch(`${SB_URL}/rest/v1/${table}?${col}=eq.${encodeURIComponent(val)}`,{method:'DELETE',headers:H});
+  return r.ok;
+}
+async function sbPatch(table,col,val,data){
+  const r=await fetch(`${SB_URL}/rest/v1/${table}?${col}=eq.${encodeURIComponent(val)}`,{method:'PATCH',headers:H,body:JSON.stringify(data)});
+  return r.ok;
+}
+
+/* Mapping DB -> app */
+function dbToRelease(r){return{id:r.id,name:r.name,clientId:r.client_id,productIds:r.product_ids||[],date:r.date,env:r.env,status:r.status,note:r.note||''}}
+function releaseToDb(r){return{id:r.id,name:r.name,client_id:r.clientId,product_ids:r.productIds||[],date:r.date,env:r.env,status:r.status,note:r.note||''}}
+
 const STATUSES=[
   {key:'planned',label:'Planifiée',color:'#378ADD',bg:'#e6f1fb'},
   {key:'in_progress',label:'En cours',color:'#BA7517',bg:'#faeeda'},
@@ -124,24 +149,33 @@ const STATUSES=[
 function stOf(k){return STATUSES.find(s=>s.key===k)||STATUSES[0]}
 
 let products=[],clients=[],releases=[];
-let nextId=1,nextPid=1,nextCid=1;
 
 function prodById(id){return products.find(p=>p.id===id)}
 function clientById(id){return clients.find(c=>c.id===id)}
 function clientColor(cid){return(clientById(cid)||{color:'#aaa'}).color}
 
-/* productIds est maintenant un tableau */
 let S={
   year:new Date().getFullYear(),month:new Date().getMonth(),
   filterClient:'all',filterStatus:'all',
   view:'calendar',page:'main',stab:'clients',
-  modal:null,editId:null,detailId:null,
+  modal:null,editId:null,detailId:null,loading:false,
   form:{name:'',productIds:[],clientId:'',date:'',env:'Production',status:'planned',note:''},
   editingProdId:null,editingProdName:'',editingProdColor:'',
   editingClientId:null,editingClientName:'',editingClientColor:'',
   newProdName:'',newProdColor:'#9F8AEA',
   newClientName:'',newClientColor:'#AAE66E',
 };
+
+async function loadAll(){
+  S.loading=true;render();
+  try{
+    const [c,p,r]=await Promise.all([sbGet('clients'),sbGet('products'),sbGet('releases')]);
+    clients=c||[];
+    products=p||[];
+    releases=(r||[]).map(dbToRelease);
+  }catch(e){console.error(e)}
+  S.loading=false;render();
+}
 
 function filtered(){
   return releases.filter(r=>{
@@ -204,8 +238,7 @@ function renderList(){
   if(!filt.length)return`<div class="empty-state"><i class="ti ti-list-search"></i>Aucune mise en production pour cette sélection</div>`;
   return`<div class="list-view">${filt.map(r=>{
     const st=stOf(r.status);const c=clientColor(r.clientId);
-    const cli=clientById(r.clientId);
-    const pids=r.productIds||[];
+    const cli=clientById(r.clientId);const pids=r.productIds||[];
     return`<div class="list-item" onclick="openDetail(${r.id})">
       <div class="list-date">${r.date.slice(5).replace('-','/')}</div>
       <div class="list-dot" style="background:${c}"></div>
@@ -237,7 +270,7 @@ function renderModal(){
       <input class="f-input" type="text" value="${f.name}" oninput="sf('name',this.value)" placeholder="Ex: Déploiement v2.5">
       <span class="f-label">Client</span>
       ${clients.length?`<select class="f-input" onchange="sf('clientId',this.value)">${clients.map(c=>`<option value="${c.id}"${f.clientId===c.id?' selected':''}>${c.name}</option>`).join('')}</select>`:`<p style="font-size:12px;color:#bbb;padding:6px 0;font-style:italic">Aucun client — ajoutez-en dans Configurer</p>`}
-      <span class="f-label">Produits <span style="font-weight:400;color:#aaa">(sélectionnez un ou plusieurs)</span></span>
+      <span class="f-label">Produits <span style="font-weight:400;color:#aaa">(un ou plusieurs)</span></span>
       ${pickerHtml}
       <span class="f-label">Date de mise en production</span>
       <input class="f-input" type="date" value="${f.date}" onchange="sf('date',this.value)">
@@ -257,8 +290,7 @@ function renderModal(){
   if(S.modal==='detail'){
     const r=releases.find(x=>x.id===S.detailId);if(!r)return'';
     const st=stOf(r.status);const c=clientColor(r.clientId);
-    const cli=clientById(r.clientId);
-    const pids=r.productIds||[];
+    const cli=clientById(r.clientId);const pids=r.productIds||[];
     return`<div class="modal-overlay" onclick="cModal(event)"><div class="modal" onclick="event.stopPropagation()">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
         <div class="modal-title" style="margin:0">${r.name}</div>
@@ -308,7 +340,7 @@ function renderSettings(){
     <div class="entity-list">${rows||`<p class="no-entries">Aucun client — ajoutez-en ci-dessous</p>`}</div>
     <div class="add-zone"><div class="add-zone-label">Ajouter un client</div>
       <div class="add-row">
-        <input type="color" class="cpick" value="${S.newClientColor}" oninput="S.newClientColor=this.value" title="Couleur">
+        <input type="color" class="cpick" value="${S.newClientColor}" oninput="S.newClientColor=this.value">
         <input class="add-input" type="text" value="${S.newClientName}" oninput="S.newClientName=this.value" placeholder="Nom du client" onkeydown="if(event.key==='Enter')addClient()">
         <button class="btn btn-primary" onclick="addClient()"><i class="ti ti-plus"></i> Ajouter</button>
       </div>
@@ -338,7 +370,7 @@ function renderSettings(){
     <div class="entity-list">${rows||`<p class="no-entries">Aucun produit — ajoutez-en ci-dessous</p>`}</div>
     <div class="add-zone"><div class="add-zone-label">Ajouter un produit</div>
       <div class="add-row">
-        <input type="color" class="cpick" value="${S.newProdColor}" oninput="S.newProdColor=this.value" title="Couleur">
+        <input type="color" class="cpick" value="${S.newProdColor}" oninput="S.newProdColor=this.value">
         <input class="add-input" type="text" value="${S.newProdName}" oninput="S.newProdName=this.value" placeholder="Nom du produit" onkeydown="if(event.key==='Enter')addProd()">
         <button class="btn btn-primary" onclick="addProd()"><i class="ti ti-plus"></i> Ajouter</button>
       </div>
@@ -359,6 +391,10 @@ function renderSettings(){
       <div class="stab${tab==='statuses'?' active':''}" onclick="S.stab='statuses';render()"><i class="ti ti-flag"></i> Statuts</div>
     </div>
     <div class="sbody">${body}</div>
+    <div style="padding:10px 20px;border-top:1px solid rgba(0,0,0,0.07);display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:12px;color:#aaa"><i class="ti ti-cloud" style="vertical-align:-2px;margin-right:4px"></i>Données synchronisées avec Supabase</span>
+      <button class="btn btn-sm" onclick="loadAll()"><i class="ti ti-refresh"></i> Actualiser</button>
+    </div>
   </div>`;
 }
 
@@ -381,6 +417,12 @@ function render(){
   const months=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
   const filt=filtered();
   const countM=filt.filter(r=>{const d=new Date(r.date+'T00:00:00');return d.getFullYear()===S.year&&d.getMonth()===S.month}).length;
+
+  if(S.loading){
+    document.getElementById('app').innerHTML=`<div style="text-align:center;padding:4rem;color:#888;font-size:14px"><div style="font-size:36px;margin-bottom:12px">⏳</div>Chargement des données…</div>`;
+    return;
+  }
+
   const headerHtml=`<div class="header">
     <div>
       <div class="logo">OneOrtho <span>medical</span></div>
@@ -394,7 +436,9 @@ function render(){
          <button class="btn btn-primary" onclick="openAdd()"><i class="ti ti-plus"></i> Nouvelle MEP</button>`}
     </div>
   </div>`;
+
   if(S.page==='settings'){document.getElementById('app').innerHTML=headerHtml+renderSettings()+renderModal();return;}
+
   const legendHtml=clients.length?`<div class="legend-bar">
     <span class="legend-label">Client</span>
     ${clients.map(c=>{const a=S.filterClient===c.id;return`<div class="legend-chip${a?' active':''}" style="color:${c.color}" onclick="S.filterClient=S.filterClient==='${c.id}'?'all':'${c.id}';render()">
@@ -403,9 +447,11 @@ function render(){
     ${S.filterClient!=='all'?`<button class="legend-clear" onclick="S.filterClient='all';render()"><i class="ti ti-x"></i> Tout</button>`:''}
     <span class="legend-count">${countM} MEP ce mois</span>
   </div>`:'';
+
   const mainHtml=releases.length===0?
     `<div class="empty-state"><i class="ti ti-rocket"></i>Commencez par ajouter vos clients et produits dans <span class="empty-strong">Configurer</span>,<br>puis créez votre première MEP en cliquant sur <span class="empty-strong">+ Nouvelle MEP</span>.</div>`:
     (S.view==='calendar'?renderCalendar():renderList());
+
   document.getElementById('app').innerHTML=`${headerHtml}
     <div class="toolbar">
       <div class="cal-nav">
@@ -440,57 +486,89 @@ function openEdit(id){
 function openDetail(id){S.detailId=id;S.modal='detail';render()}
 function cModal(e){if(e&&e.target!==e.currentTarget)return;S.modal=null;render()}
 function sf(k,v){S.form[k]=v}
-function saveRelease(){
+
+async function saveRelease(){
   if(!S.form.name||!S.form.date){alert('Nom et date requis');return}
   if(!S.form.clientId&&clients.length)S.form.clientId=clients[0].id;
+  const id=S.editId||Date.now();
+  const row=releaseToDb({...S.form,id});
+  const ok=await sbUpsert('releases',row);
+  if(!ok){alert('Erreur lors de la sauvegarde');return}
   if(S.editId){const i=releases.findIndex(x=>x.id===S.editId);releases[i]={...S.form,id:S.editId}}
-  else releases.push({...S.form,id:nextId++});
+  else releases.push({...S.form,id});
   S.modal=null;render();
 }
-function delRelease(id){releases=releases.filter(x=>x.id!==id);S.modal=null;render()}
+
+async function delRelease(id){
+  const ok=await sbDelete('releases','id',id);
+  if(!ok){alert('Erreur lors de la suppression');return}
+  releases=releases.filter(x=>x.id!==id);S.modal=null;render();
+}
+
 function clickDay(d){
   const ds=`${S.year}-${String(S.month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
   S.form={name:'',productIds:[],clientId:clients[0]?.id||'',date:ds,env:'Production',status:'planned',note:''};
   S.editId=null;S.modal='form';render();
 }
+
 function startEditProd(id){const p=products.find(x=>x.id===id);S.editingProdId=id;S.editingProdName=p.name;S.editingProdColor=p.color;render()}
-function saveProd(id){
+async function saveProd(id){
   const name=S.editingProdName.trim();if(!name)return;
+  const ok=await sbPatch('products','id',id,{name,color:S.editingProdColor});
+  if(!ok){alert('Erreur');return}
   const i=products.findIndex(p=>p.id===id);products[i]={...products[i],name,color:S.editingProdColor};
   S.editingProdId=null;render();
 }
-function deleteProd(id){
+async function deleteProd(id){
   const n=releases.filter(r=>(r.productIds||[]).includes(id)).length;
   const msg=n>0?`Ce produit est lié à ${n} MEP(s). Le retirer de toutes ces MEPs ?`:'Supprimer ce produit ?';
   if(!confirm(msg))return;
-  releases=releases.map(r=>({...r,productIds:(r.productIds||[]).filter(x=>x!==id)}));
+  for(const r of releases.filter(r=>(r.productIds||[]).includes(id))){
+    const newIds=r.productIds.filter(x=>x!==id);
+    await sbPatch('releases','id',r.id,{product_ids:newIds});
+    r.productIds=newIds;
+  }
+  const ok=await sbDelete('products','id',id);
+  if(!ok){alert('Erreur');return}
   products=products.filter(p=>p.id!==id);render();
 }
-function addProd(){
+async function addProd(){
   const name=S.newProdName.trim();if(!name){alert('Saisissez un nom');return}
-  products.push({id:'p'+(nextPid++),name,color:S.newProdColor});
+  const id='p'+Date.now();
+  const ok=await sbUpsert('products',{id,name,color:S.newProdColor});
+  if(!ok){alert('Erreur');return}
+  products.push({id,name,color:S.newProdColor});
   S.newProdName='';render();
 }
 function startEditClient(id){const c=clients.find(x=>x.id===id);S.editingClientId=id;S.editingClientName=c.name;S.editingClientColor=c.color;render()}
-function saveClient(id){
+async function saveClient(id){
   const name=S.editingClientName.trim();if(!name)return;
+  const ok=await sbPatch('clients','id',id,{name,color:S.editingClientColor});
+  if(!ok){alert('Erreur');return}
   const i=clients.findIndex(c=>c.id===id);clients[i]={...clients[i],name,color:S.editingClientColor};
   S.editingClientId=null;render();
 }
-function deleteClient(id){
+async function deleteClient(id){
   const n=releases.filter(r=>r.clientId===id).length;
   const msg=n>0?`Ce client est lié à ${n} MEP(s). Supprimer quand même (les MEPs seront aussi supprimées) ?`:'Supprimer ce client ?';
   if(!confirm(msg))return;
+  for(const r of releases.filter(r=>r.clientId===id)) await sbDelete('releases','id',r.id);
+  const ok=await sbDelete('clients','id',id);
+  if(!ok){alert('Erreur');return}
   releases=releases.filter(r=>r.clientId!==id);
   if(S.filterClient===id)S.filterClient='all';
   clients=clients.filter(c=>c.id!==id);render();
 }
-function addClient(){
+async function addClient(){
   const name=S.newClientName.trim();if(!name){alert('Saisissez un nom');return}
-  clients.push({id:'c'+(nextCid++),name,color:S.newClientColor});
+  const id='c'+Date.now();
+  const ok=await sbUpsert('clients',{id,name,color:S.newClientColor});
+  if(!ok){alert('Erreur');return}
+  clients.push({id,name,color:S.newClientColor});
   S.newClientName='';render();
 }
-render();
+
+loadAll();
 </script>
 </body>
 </html>
