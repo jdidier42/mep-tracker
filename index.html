@@ -8,95 +8,93 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:#F8F7F4;min-height:100vh;padding:2rem 1.5rem;color:#1a1a1a}
-.app{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+body{font-family:'Inter',sans-serif;background:#F8F7F4;min-height:100vh;color:#1a1a1a}
+.layout{display:grid;grid-template-rows:auto auto 1fr;min-height:100vh}
 
-/* Header */
-.header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-bottom:16px;border-bottom:1px solid #E8E5DE}
-.logo{font-family:'Sora',sans-serif;font-weight:700;font-size:18px;color:#004B32;letter-spacing:-0.3px}
+/* ── TOPBAR ── */
+.topbar{padding:14px 24px;border-bottom:1px solid #E8E5DE;display:flex;align-items:center;justify-content:space-between;background:#fff;gap:12px;flex-wrap:wrap}
+.logo{font-family:'Sora',sans-serif;font-weight:700;font-size:17px;color:#004B32;letter-spacing:-.3px}
 .logo em{font-style:normal;color:#AAE66E}
-.logo-sub{font-size:11px;color:#aaa;font-weight:400;margin-top:1px;letter-spacing:0.2px}
-.header-actions{display:flex;gap:8px;align-items:center}
+.logo-sub{font-size:11px;color:#bbb;margin-top:1px}
+.topbar-actions{display:flex;gap:8px;align-items:center}
 
-/* Buttons */
+/* ── KPI STRIP ── */
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid #E8E5DE;background:#fff}
+.kpi{padding:14px 20px;border-right:1px solid #E8E5DE}
+.kpi:last-child{border-right:none}
+.kpi-val{font-size:24px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.kpi-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:#bbb;margin-top:5px}
+.kpi-trend{font-size:11px;margin-top:5px;font-weight:500}
+
+/* ── BODY (sidebar + main) ── */
+.body{display:grid;grid-template-columns:220px 1fr;min-height:0}
+
+/* ── SIDEBAR ── */
+.sidebar{border-right:1px solid #E8E5DE;background:#fff;padding:16px 12px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-section{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#ccc;padding:4px 8px;margin-top:12px;margin-bottom:2px}
+.sb-section:first-child{margin-top:0}
+.sb-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:7px;cursor:pointer;transition:background .1s;border:1px solid transparent}
+.sb-item:hover{background:#F8F7F4}
+.sb-item.active{background:#F0F9F5;border-color:#C8E6DA}
+.sb-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.sb-name{font-size:12px;font-weight:500;color:#333;flex:1}
+.sb-item.active .sb-name{color:#004B32;font-weight:600}
+.sb-count{font-size:10px;color:#ccc;font-weight:600;font-variant-numeric:tabular-nums}
+.sb-status{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:7px;cursor:pointer;transition:background .1s}
+.sb-status:hover{background:#F8F7F4}
+.sb-status.active{background:#F0F9F5}
+.sb-status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sb-status-name{font-size:12px;color:#555;flex:1}
+.sb-status.active .sb-status-name{color:#004B32;font-weight:500}
+.sb-divider{height:1px;background:#E8E5DE;margin:8px 0}
+.sb-add-btn{display:flex;align-items:center;gap:6px;padding:7px 8px;border-radius:7px;cursor:pointer;font-size:12px;color:#aaa;transition:all .1s;border:1px dashed #E0DDD6;margin-top:4px;justify-content:center}
+.sb-add-btn:hover{color:#004B32;border-color:#004B32;background:#F0F9F5}
+
+/* ── MAIN CONTENT ── */
+.main{padding:20px 24px;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
+
+/* ── MONTH NAV ── */
+.month-nav{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.month-title{font-family:'Sora',sans-serif;font-size:16px;font-weight:600}
+.month-controls{display:flex;gap:8px;align-items:center}
+
+/* ── TIMELINE ── */
+.timeline{position:relative;padding-left:24px}
+.tl-line{position:absolute;left:7px;top:0;bottom:0;width:1px;background:#E8E5DE}
+.tl-month-header{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#ccc;margin-bottom:10px;margin-top:20px;display:flex;align-items:center;gap:8px}
+.tl-month-header:first-child{margin-top:0}
+.tl-month-header::after{content:'';flex:1;height:1px;background:#E8E5DE}
+.tl-item{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;position:relative}
+.tl-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-left:-24px;margin-top:10px;border:2px solid #fff;box-shadow:0 0 0 1px #E8E5DE;z-index:1;position:relative}
+.tl-card{flex:1;border:1px solid #E8E5DE;border-radius:10px;background:#fff;padding:12px 14px;cursor:pointer;transition:all .12s;border-left-width:3px}
+.tl-card:hover{border-color:#D0CEC8;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.tl-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
+.tl-card-name{font-size:13px;font-weight:600;color:#1a1a1a;line-height:1.3}
+.tl-card-date{font-size:11px;color:#bbb;font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tl-card-meta{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.tl-tag{display:inline-block;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:600}
+.tl-note{font-size:11px;color:#aaa;margin-top:7px;padding-top:7px;border-top:1px solid #F5F3EE;line-height:1.5}
+.tl-edit-btn{opacity:0;transition:opacity .1s;background:none;border:none;cursor:pointer;color:#aaa;padding:2px 5px;border-radius:5px;font-size:12px}
+.tl-card:hover .tl-edit-btn{opacity:1}
+.tl-edit-btn:hover{background:#F8F7F4;color:#333}
+
+/* ── EMPTY ── */
+.empty-state{text-align:center;padding:4rem 2rem;color:#ccc;font-size:13px;line-height:1.8}
+.empty-state i{font-size:36px;display:block;margin-bottom:14px;color:#ddd}
+.empty-strong{font-weight:600;color:#888;background:#F0EDE8;padding:1px 7px;border-radius:5px}
+
+/* ── BUTTONS ── */
 .btn{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;padding:7px 14px;border-radius:8px;border:1px solid #E0DDD6;background:#fff;color:#333;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .12s;line-height:1;white-space:nowrap}
 .btn:hover{background:#F2EFE8;border-color:#ccc}
 .btn-primary{background:#004B32;color:#fff;border-color:#004B32}
 .btn-primary:hover{background:#003825}
-.btn-muted{background:transparent;color:#888;border-color:#E0DDD6}
-.btn-muted:hover{background:#F2EFE8;color:#444}
+.btn-ghost{background:transparent;color:#888;border-color:#E0DDD6}
+.btn-ghost:hover{background:#F2EFE8;color:#444}
 .btn-sm{padding:5px 10px;font-size:12px}
-.btn-icon{padding:6px 8px;min-width:32px;justify-content:center;border-radius:7px}
+.btn-icon{padding:6px 9px;min-width:32px;justify-content:center}
 
-/* Toolbar */
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.toolbar select{font-family:'Inter',sans-serif;font-size:13px;padding:7px 10px;border-radius:8px;border:1px solid #E0DDD6;background:#fff;color:#333;cursor:pointer;appearance:auto;max-width:160px}
-.cal-nav{display:flex;align-items:center;gap:6px}
-.cal-month{font-family:'Sora',sans-serif;font-weight:600;font-size:15px;color:#1a1a1a;min-width:152px;text-align:center}
-.views{display:flex;gap:0;margin-left:auto;border:1px solid #E0DDD6;border-radius:8px;overflow:hidden;background:#fff}
-.view-btn{padding:7px 11px;border:none;background:transparent;font-size:13px;cursor:pointer;color:#aaa;transition:all .12s}
-.view-btn:first-child{border-right:1px solid #E0DDD6}
-.view-btn.active{background:#004B32;color:#fff}
-
-/* Legend */
-.legend-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.legend-chip{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:500;cursor:pointer;padding:5px 11px;border-radius:99px;border:1px solid #E0DDD6;background:#fff;color:#555;transition:all .12s}
-.legend-chip:hover{border-color:#aaa}
-.legend-chip.active{border-color:currentColor;background:#fff;font-weight:600}
-.legend-chip-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.legend-clear{font-size:12px;color:#aaa;cursor:pointer;padding:5px 10px;border-radius:99px;border:1px solid #E0DDD6;background:#fff;transition:all .12s}
-.legend-clear:hover{color:#333;border-color:#aaa}
-.legend-count{margin-left:auto;font-size:12px;color:#bbb;font-weight:500}
-
-/* Calendar */
-.calendar{background:#fff;border-radius:12px;border:1px solid #E8E5DE;overflow:hidden}
-.cal-head{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid #E8E5DE}
-.cal-day-label{text-align:center;padding:10px 4px;font-size:10px;font-weight:600;color:#bbb;text-transform:uppercase;letter-spacing:.8px}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr)}
-.cal-cell{min-height:90px;border-right:1px solid #F0EDE6;border-bottom:1px solid #F0EDE6;padding:8px 6px;cursor:pointer;transition:background .1s;-webkit-tap-highlight-color:transparent}
-.cal-cell:nth-child(7n){border-right:none}
-.cal-cell:hover{background:#FAFAF7}
-.cal-cell.empty{background:#FAFAF7;cursor:default}
-.day-num{font-size:11px;color:#ccc;margin-bottom:5px;width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:600}
-.day-num.today{background:#004B32;color:#fff}
-.event-pill{font-size:10px;font-weight:600;padding:3px 7px;border-radius:6px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;transition:opacity .1s;-webkit-tap-highlight-color:transparent}
-.event-pill:hover{opacity:.7}
-.more-link{font-size:10px;color:#ccc;cursor:pointer;padding:1px 3px;margin-top:1px}
-
-/* List */
-.list-view{display:flex;flex-direction:column;gap:4px}
-.list-item{display:flex;align-items:center;gap:14px;padding:12px 16px;border:1px solid #E8E5DE;border-radius:9px;cursor:pointer;background:#fff;transition:all .1s}
-.list-item:hover{background:#FAFAF7;border-color:#D5D2CB}
-.list-date{font-size:11px;color:#bbb;min-width:46px;flex-shrink:0;font-weight:600;font-variant-numeric:tabular-nums}
-.list-bar{width:3px;height:28px;border-radius:99px;flex-shrink:0}
-.list-name{font-size:13px;font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.list-tags{display:flex;gap:4px;flex-shrink:0;flex-wrap:wrap;align-items:center}
-.tag{display:inline-block;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:500;flex-shrink:0}
-
-/* Modal */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem;backdrop-filter:blur(2px)}
-.modal{background:#fff;border-radius:14px;padding:2rem;width:440px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 4px 40px rgba(0,0,0,0.12)}
-.modal-title{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:#1a1a1a;margin-bottom:1.5rem}
-.f-label{font-size:11px;color:#aaa;display:block;margin-bottom:5px;margin-top:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
-.f-input{width:100%;font-family:'Inter',sans-serif;font-size:13px;padding:9px 12px;border-radius:8px;border:1px solid #E0DDD6;background:#fff;color:#1a1a1a;transition:border-color .12s}
-.f-input:focus{outline:none;border-color:#004B32;box-shadow:0 0 0 3px rgba(0,75,50,0.07)}
-.f-textarea{width:100%;font-family:'Inter',sans-serif;font-size:13px;padding:9px 12px;border-radius:8px;border:1px solid #E0DDD6;background:#fff;color:#1a1a1a;resize:vertical;min-height:64px;transition:border-color .12s}
-.f-textarea:focus{outline:none;border-color:#004B32;box-shadow:0 0 0 3px rgba(0,75,50,0.07)}
-.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #F0EDE6}
-.detail-row{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #F5F3EE;font-size:13px}
-.detail-row:last-child{border-bottom:none}
-.detail-label{color:#bbb;min-width:90px;font-size:11px;flex-shrink:0;font-weight:600;text-transform:uppercase;letter-spacing:.4px;padding-top:2px}
-
-/* Multi-product picker */
-.prod-picker{display:flex;flex-direction:column;gap:2px;padding:6px;background:#fff;border-radius:8px;border:1px solid #E0DDD6;max-height:160px;overflow-y:auto}
-.prod-check{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:6px;cursor:pointer;transition:background .1s;user-select:none}
-.prod-check:hover{background:#F8F7F4}
-.prod-check input[type=checkbox]{width:15px;height:15px;accent-color:#004B32;cursor:pointer;flex-shrink:0}
-.prod-check-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.prod-check-name{font-size:13px;color:#333}
-.prod-tags{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
-
-/* Settings */
+/* ── SETTINGS ── */
+.settings-wrap{padding:20px 24px}
 .settings-panel{background:#fff;border-radius:12px;border:1px solid #E8E5DE;overflow:hidden}
 .stabs{display:flex;border-bottom:1px solid #E8E5DE}
 .stab{padding:13px 20px;font-size:13px;font-weight:500;cursor:pointer;color:#aaa;border-bottom:2px solid transparent;margin-bottom:-1px;display:flex;align-items:center;gap:7px;transition:all .12s;white-space:nowrap}
@@ -124,107 +122,70 @@ body{font-family:'Inter',sans-serif;background:#F8F7F4;min-height:100vh;padding:
 .inline-edit-row{display:flex;gap:8px;align-items:center;flex:1}
 .inline-edit-input{flex:1;font-family:'Inter',sans-serif;font-size:13px;padding:7px 10px;border-radius:8px;border:1px solid #AAE66E;background:#F5FDF0;color:#1a1a1a;outline:none}
 .settings-footer{padding:12px 20px;border-top:1px solid #F0EDE6;display:flex;align-items:center;justify-content:space-between;background:#FAFAF7}
-
-/* Empty */
-.empty-state{text-align:center;padding:4rem 2rem;color:#ccc;font-size:13px;background:#fff;border-radius:12px;border:1px solid #E8E5DE;line-height:1.8}
-.empty-state i{font-size:36px;display:block;margin-bottom:14px;color:#ddd}
-.empty-strong{font-weight:600;color:#888;background:#F0EDE8;padding:1px 7px;border-radius:5px}
 .no-entries{font-size:13px;color:#ccc;padding:8px 0;font-style:italic}
 
-/* Loading */
-.loading-screen{text-align:center;padding:5rem 2rem;color:#ccc;font-size:13px}
-.loading-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#AAE66E;animation:pulse 1.2s ease-in-out infinite}
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem;backdrop-filter:blur(2px)}
+.modal{background:#fff;border-radius:14px;padding:2rem;width:440px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 4px 40px rgba(0,0,0,0.12)}
+.modal-title{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:#1a1a1a;margin-bottom:1.5rem}
+.f-label{font-size:11px;color:#aaa;display:block;margin-bottom:5px;margin-top:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.f-input{width:100%;font-family:'Inter',sans-serif;font-size:13px;padding:9px 12px;border-radius:8px;border:1px solid #E0DDD6;background:#fff;color:#1a1a1a;transition:border-color .12s}
+.f-input:focus{outline:none;border-color:#004B32;box-shadow:0 0 0 3px rgba(0,75,50,0.07)}
+.f-textarea{width:100%;font-family:'Inter',sans-serif;font-size:13px;padding:9px 12px;border-radius:8px;border:1px solid #E0DDD6;background:#fff;color:#1a1a1a;resize:vertical;min-height:64px}
+.f-textarea:focus{outline:none;border-color:#004B32;box-shadow:0 0 0 3px rgba(0,75,50,0.07)}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #F0EDE6}
+.detail-row{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #F5F3EE;font-size:13px}
+.detail-row:last-child{border-bottom:none}
+.detail-label{color:#bbb;min-width:90px;font-size:11px;flex-shrink:0;font-weight:600;text-transform:uppercase;letter-spacing:.4px;padding-top:2px}
+.prod-picker{display:flex;flex-direction:column;gap:2px;padding:6px;background:#fff;border-radius:8px;border:1px solid #E0DDD6;max-height:160px;overflow-y:auto}
+.prod-check{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:6px;cursor:pointer;transition:background .1s;user-select:none}
+.prod-check:hover{background:#F8F7F4}
+.prod-check input[type=checkbox]{width:15px;height:15px;accent-color:#004B32;cursor:pointer;flex-shrink:0}
+.prod-check-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.prod-check-name{font-size:13px;color:#333}
+.prod-tags{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.tag{display:inline-block;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:500;flex-shrink:0}
+
+/* ── LOADING ── */
+.loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5rem 2rem;color:#ccc;font-size:13px;gap:14px}
+.loading-dots{display:flex;gap:6px}
+.loading-dot{width:8px;height:8px;border-radius:50%;background:#AAE66E;animation:pulse 1.2s ease-in-out infinite}
 .loading-dot:nth-child(2){animation-delay:.2s}
 .loading-dot:nth-child(3){animation-delay:.4s}
 @keyframes pulse{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
 
-/* ── RESPONSIVE ─────────────────────────────────────────── */
-@media(max-width:640px){
-  body{padding:1rem .75rem}
-  .app{gap:10px}
-
-  /* Header */
-  .header{padding-bottom:12px;gap:10px}
-  .logo{font-size:16px}
-  .header-actions .btn-muted{display:none} /* masquer Export CSV sur mobile */
-  .btn{font-size:12px;padding:7px 11px;gap:5px}
-  .btn-primary{padding:7px 12px}
-
-  /* Toolbar */
-  .toolbar{gap:6px}
-  .cal-month{font-size:13px;min-width:120px}
-  .toolbar select{font-size:12px;padding:6px 8px}
-
-  /* Calendar — cellules plus petites */
-  .cal-cell{min-height:56px;padding:4px 3px}
-  .cal-day-label{font-size:9px;padding:7px 2px;letter-spacing:.4px}
-  .day-num{font-size:10px;width:18px;height:18px;margin-bottom:2px}
-  .event-pill{font-size:9px;padding:2px 4px;border-radius:4px}
-  .more-link{font-size:9px}
-
-  /* Legend — scroll horizontal */
-  .legend-bar{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-  .legend-bar::-webkit-scrollbar{display:none}
-  .legend-chip{white-space:nowrap;flex-shrink:0;font-size:11px;padding:4px 9px}
-  .legend-count{display:none}
-
-  /* List */
-  .list-item{padding:10px 12px;gap:10px;flex-wrap:wrap}
-  .list-date{min-width:38px;font-size:10px}
-  .list-name{font-size:12px;min-width:0;width:100%;flex:none;order:3;white-space:normal}
-  .list-bar{height:20px}
-  .list-tags{order:4;width:100%}
-
-  /* Modal — plein écran en bas */
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .kpi-strip{grid-template-columns:repeat(2,1fr)}
+  .kpi:nth-child(2){border-right:none}
+  .kpi:nth-child(3){border-top:1px solid #E8E5DE}
+  .kpi:nth-child(4){border-top:1px solid #E8E5DE;border-right:none}
+  .body{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .main{padding:14px 16px}
+  .topbar{padding:12px 16px}
+  .kpi{padding:12px 16px}
+}
+@media(max-width:480px){
+  .kpi-strip{grid-template-columns:repeat(2,1fr)}
+  .kpi-val{font-size:20px}
   .modal-overlay{align-items:flex-end;padding:0}
   .modal{border-radius:16px 16px 0 0;width:100%;max-width:100%;padding:1.5rem 1.25rem;max-height:92vh}
-  .modal-title{font-size:15px}
-
-  /* Settings */
-  .stab{padding:11px 14px;font-size:12px;gap:5px}
-  .sbody{padding:1.25rem}
-  .entity-row{padding:9px 12px;gap:8px}
-  .e-name{font-size:12px}
-  .add-zone{padding:12px}
-  .add-row{flex-wrap:wrap}
-  .add-input{min-width:0;width:calc(100% - 46px)}
-
-  /* Header actions mobile — bouton configurer icône seule */
-  .btn-label-mobile{display:none}
-}
-
-@media(max-width:380px){
-  .cal-cell{min-height:46px;padding:3px 2px}
-  .event-pill{display:none} /* trop petit, afficher seulement le point */
-  .day-num{font-size:9px}
 }
 </style>
 </head>
 <body>
-<div class="app" id="app"></div>
+<div class="layout" id="app"></div>
 <script>
 const SB_URL='https://odsvvwmtlkglpjqeqjjq.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kc3Z2d210bGtnbHBqcWVxampxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTc2NjEsImV4cCI6MjA5NDkzMzY2MX0.aA2LxUE9N8ZYF_p4W2SEOyMS-OVIIlGPSRFGXZKKKMU';
 const H={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'};
 
-async function sbGet(table){
-  const r=await fetch(`${SB_URL}/rest/v1/${table}?select=*`,{headers:H});
-  return r.ok?r.json():[];
-}
-async function sbUpsert(table,row){
-  const r=await fetch(`${SB_URL}/rest/v1/${table}`,{method:'POST',headers:{...H,'Prefer':'resolution=merge-duplicates,return=representation'},body:JSON.stringify(row)});
-  return r.ok;
-}
-async function sbDelete(table,col,val){
-  const r=await fetch(`${SB_URL}/rest/v1/${table}?${col}=eq.${encodeURIComponent(val)}`,{method:'DELETE',headers:H});
-  return r.ok;
-}
-async function sbPatch(table,col,val,data){
-  const r=await fetch(`${SB_URL}/rest/v1/${table}?${col}=eq.${encodeURIComponent(val)}`,{method:'PATCH',headers:H,body:JSON.stringify(data)});
-  return r.ok;
-}
+async function sbGet(t){const r=await fetch(`${SB_URL}/rest/v1/${t}?select=*`,{headers:H});return r.ok?r.json():[]}
+async function sbUpsert(t,row){const r=await fetch(`${SB_URL}/rest/v1/${t}`,{method:'POST',headers:{...H,'Prefer':'resolution=merge-duplicates,return=representation'},body:JSON.stringify(row)});return r.ok}
+async function sbDelete(t,col,val){const r=await fetch(`${SB_URL}/rest/v1/${t}?${col}=eq.${encodeURIComponent(val)}`,{method:'DELETE',headers:H});return r.ok}
+async function sbPatch(t,col,val,data){const r=await fetch(`${SB_URL}/rest/v1/${t}?${col}=eq.${encodeURIComponent(val)}`,{method:'PATCH',headers:H,body:JSON.stringify(data)});return r.ok}
 
-/* Mapping DB -> app */
 function dbToRelease(r){return{id:r.id,name:r.name,clientId:r.client_id,productIds:r.product_ids||[],date:r.date,env:r.env,status:r.status,note:r.note||''}}
 function releaseToDb(r){return{id:r.id,name:r.name,client_id:r.clientId,product_ids:r.productIds||[],date:r.date,env:r.env,status:r.status,note:r.note||''}}
 
@@ -238,15 +199,13 @@ const STATUSES=[
 function stOf(k){return STATUSES.find(s=>s.key===k)||STATUSES[0]}
 
 let products=[],clients=[],releases=[];
-
 function prodById(id){return products.find(p=>p.id===id)}
 function clientById(id){return clients.find(c=>c.id===id)}
 function clientColor(cid){return(clientById(cid)||{color:'#aaa'}).color}
 
 let S={
-  year:new Date().getFullYear(),month:new Date().getMonth(),
   filterClient:'all',filterStatus:'all',
-  view:'calendar',page:'main',stab:'clients',
+  page:'main',stab:'clients',
   modal:null,editId:null,detailId:null,loading:false,
   form:{name:'',productIds:[],clientId:'',date:'',env:'Production',status:'planned',note:''},
   editingProdId:null,editingProdName:'',editingProdColor:'',
@@ -259,9 +218,7 @@ async function loadAll(){
   S.loading=true;render();
   try{
     const [c,p,r]=await Promise.all([sbGet('clients'),sbGet('products'),sbGet('releases')]);
-    clients=c||[];
-    products=p||[];
-    releases=(r||[]).map(dbToRelease);
+    clients=c||[];products=p||[];releases=(r||[]).map(dbToRelease);
   }catch(e){console.error(e)}
   S.loading=false;render();
 }
@@ -280,87 +237,149 @@ function toggleProd(pid){
   render();
 }
 
-function prodTagsHtml(productIds){
-  if(!productIds||!productIds.length)return`<span style="color:#bbb;font-size:12px;font-style:italic">Aucun</span>`;
-  return productIds.map(pid=>{
-    const p=prodById(pid);if(!p)return'';
-    return`<span class="tag" style="background:#ede9e0;color:#444">${p.name}</span>`;
-  }).join('');
+function prodTagsHtml(pids){
+  if(!pids||!pids.length)return`<span style="color:#bbb;font-size:12px;font-style:italic">Aucun</span>`;
+  return pids.map(pid=>{const p=prodById(pid);return p?`<span class="tag" style="background:#F0EDE8;color:#666">${p.name}</span>`:''}).join('');
 }
 
-function renderCalendar(){
-  const dim=new Date(S.year,S.month+1,0).getDate();
-  const sd=new Date(S.year,S.month,1).getDay()||7;
-  const today=new Date();
-  const byDay={};
-  filtered().forEach(r=>{
-    const rd=new Date(r.date+'T00:00:00');
-    if(rd.getFullYear()===S.year&&rd.getMonth()===S.month){
-      const k=rd.getDate();if(!byDay[k])byDay[k]=[];byDay[k].push(r);
-    }
-  });
-  const labels=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
-  let cells='';
-  for(let i=1;i<sd;i++)cells+=`<div class="cal-cell empty"></div>`;
-  for(let d=1;d<=dim;d++){
-    const isT=today.getDate()===d&&today.getMonth()===S.month&&today.getFullYear()===S.year;
-    const dr=byDay[d]||[];const show=dr.slice(0,2);const more=dr.length-2;
-    cells+=`<div class="cal-cell" onclick="clickDay(${d})">
-      <div class="day-num${isT?' today':''}">${d}</div>
-      ${show.map(r=>{
-        const c=clientColor(r.clientId);
-        const pids=r.productIds||[];
-        const label=r.name+(pids.length>1?` (${pids.length})`:'');
-        return`<div class="event-pill" style="background:${c}28;color:${c};border:1px solid ${c}66" onclick="event.stopPropagation();openDetail(${r.id})" title="${pids.map(id=>{const p=prodById(id);return p?p.name:''}).join(', ')}">${label}</div>`;
-      }).join('')}
-      ${more>0?`<div class="more-link">+${more} autres</div>`:''}
-    </div>`;
-  }
-  return`<div class="calendar">
-    <div class="cal-head">${labels.map(l=>`<div class="cal-day-label">${l}</div>`).join('')}</div>
-    <div class="cal-grid">${cells}</div>
+/* ── KPIs ── */
+function renderKpis(){
+  const total=releases.length;
+  const done=releases.filter(r=>r.status==='done').length;
+  const inProgress=releases.filter(r=>r.status==='in_progress').length;
+  const failed=releases.filter(r=>r.status==='failed'||r.status==='rollback').length;
+  const rate=total?Math.round(done/total*100):0;
+  return`<div class="kpi-strip">
+    <div class="kpi">
+      <div class="kpi-val">${total}</div>
+      <div class="kpi-lbl">MEPs totales</div>
+      <div class="kpi-trend" style="color:#aaa">${releases.filter(r=>r.status==='planned').length} planifiées</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val" style="color:#004B32">${rate}%</div>
+      <div class="kpi-lbl">Taux de succès</div>
+      <div class="kpi-trend" style="color:#aaa">${done} déployées</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val" style="color:#BA7517">${inProgress}</div>
+      <div class="kpi-lbl">En cours</div>
+      <div class="kpi-trend" style="color:#aaa">Staging / Pre-prod</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val" style="color:${failed>0?'#A32D2D':'#aaa'}">${failed}</div>
+      <div class="kpi-lbl">Échecs / Rollbacks</div>
+      <div class="kpi-trend" style="color:${failed>0?'#A32D2D':'#aaa'}">${failed>0?'⚠ À surveiller':'—'}</div>
+    </div>
   </div>`;
 }
 
-function renderList(){
-  const filt=filtered().sort((a,b)=>a.date.localeCompare(b.date));
-  if(!filt.length)return`<div class="empty-state"><i class="ti ti-list-search"></i>Aucune mise en production pour cette sélection</div>`;
-  return`<div class="list-view">${filt.map(r=>{
-    const st=stOf(r.status);const c=clientColor(r.clientId);
-    const cli=clientById(r.clientId);const pids=r.productIds||[];
-    return`<div class="list-item" onclick="openDetail(${r.id})">
-      <div class="list-date">${r.date.slice(5).replace('-','/')}</div>
-      <div class="list-bar" style="background:${c}"></div>
-      <div class="list-name">${r.name}</div>
-      <div class="list-tags">
-        <span class="tag" style="background:${st.bg};color:${st.color}">${st.label}</span>
-        ${cli?`<span class="tag" style="background:${c}22;color:${c}">${cli.name}</span>`:''}
-        ${pids.map(pid=>{const p=prodById(pid);return p?`<span class="tag" style="background:#ede9e0;color:#555">${p.name}</span>`:''}).join('')}
-      </div>
-    </div>`;
-  }).join('')}</div>`;
+/* ── SIDEBAR ── */
+function renderSidebar(){
+  return`<div class="sidebar">
+    <div class="sb-section">Clients</div>
+    <div class="sb-item${S.filterClient==='all'?' active':''}" onclick="S.filterClient='all';render()">
+      <div class="sb-dot" style="background:#E0DDD6"></div>
+      <span class="sb-name">Tous les clients</span>
+      <span class="sb-count">${releases.length}</span>
+    </div>
+    ${clients.map(c=>{
+      const n=releases.filter(r=>r.clientId===c.id).length;
+      const active=S.filterClient===c.id;
+      return`<div class="sb-item${active?' active':''}" onclick="S.filterClient='${c.id}';render()">
+        <div class="sb-dot" style="background:${c.color}"></div>
+        <span class="sb-name">${c.name}</span>
+        <span class="sb-count">${n}</span>
+      </div>`;
+    }).join('')}
+    <div class="sb-divider"></div>
+    <div class="sb-section">Statut</div>
+    <div class="sb-status${S.filterStatus==='all'?' active':''}" onclick="S.filterStatus='all';render()">
+      <span class="sb-status-name">Tous</span>
+    </div>
+    ${STATUSES.map(s=>`<div class="sb-status${S.filterStatus===s.key?' active':''}" onclick="S.filterStatus='${s.key}';render()">
+      <div class="sb-status-dot" style="background:${s.color}"></div>
+      <span class="sb-status-name">${s.label}</span>
+      <span class="sb-count">${releases.filter(r=>r.status===s.key).length}</span>
+    </div>`).join('')}
+    <div class="sb-divider"></div>
+    <div class="sb-add-btn" onclick="S.page='settings';render()">
+      <i class="ti ti-settings" style="font-size:14px" aria-hidden="true"></i> Configurer
+    </div>
+  </div>`;
 }
 
+/* ── TIMELINE ── */
+function renderTimeline(){
+  const filt=filtered().sort((a,b)=>a.date.localeCompare(b.date));
+  if(!filt.length)return`<div class="empty-state"><i class="ti ti-rocket" aria-hidden="true"></i>${
+    releases.length===0
+      ?`Commencez par ajouter des clients et produits via <span class="empty-strong">Configurer</span>, puis créez votre première MEP.`
+      :`Aucune mise en production pour cette sélection.`
+  }</div>`;
+
+  const byMonth={};
+  filt.forEach(r=>{
+    const d=new Date(r.date+'T00:00:00');
+    const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    if(!byMonth[key])byMonth[key]=[];
+    byMonth[key].push(r);
+  });
+
+  const monthNames=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  let html=`<div class="timeline"><div class="tl-line"></div>`;
+  Object.entries(byMonth).forEach(([key,items])=>{
+    const [y,m]=key.split('-');
+    html+=`<div class="tl-month-header">${monthNames[+m-1]} ${y}</div>`;
+    items.forEach(r=>{
+      const st=stOf(r.status);
+      const c=clientColor(r.clientId);
+      const cli=clientById(r.clientId);
+      const pids=r.productIds||[];
+      const d=new Date(r.date+'T00:00:00');
+      const dateStr=`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
+      html+=`<div class="tl-item">
+        <div class="tl-dot" style="background:${c}"></div>
+        <div class="tl-card" style="border-left-color:${c}" onclick="openDetail(${r.id})">
+          <div class="tl-card-top">
+            <div class="tl-card-name">${r.name}</div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <div class="tl-card-date">${dateStr}</div>
+              <button class="tl-edit-btn" onclick="event.stopPropagation();openEdit(${r.id})"><i class="ti ti-edit" aria-hidden="true"></i></button>
+            </div>
+          </div>
+          <div class="tl-card-meta">
+            <span class="tl-tag" style="background:${st.bg};color:${st.color}">${st.label}</span>
+            ${cli?`<span class="tl-tag" style="background:${c}18;color:${c}">${cli.name}</span>`:''}
+            ${pids.map(pid=>{const p=prodById(pid);return p?`<span class="tl-tag" style="background:#F0EDE8;color:#666">${p.name}</span>`:''}).join('')}
+            <span class="tl-tag" style="background:#F8F7F4;color:#aaa">${r.env}</span>
+          </div>
+          ${r.note?`<div class="tl-note">${r.note}</div>`:''}
+        </div>
+      </div>`;
+    });
+  });
+  html+=`</div>`;
+  return html;
+}
+
+/* ── MODAL ── */
 function renderModal(){
   if(!S.modal)return'';
   if(S.modal==='form'){
     const f=S.form;const isEdit=!!S.editId;
-    const pickerHtml=products.length?`<div class="prod-picker">${products.map(p=>{
-      const checked=(f.productIds||[]).includes(p.id);
-      return`<label class="prod-check">
-        <input type="checkbox" ${checked?'checked':''} onchange="toggleProd('${p.id}')">
-        <div class="prod-check-dot" style="background:${p.color}"></div>
-        <span class="prod-check-name">${p.name}</span>
-      </label>`;
-    }).join('')}</div>`:`<p style="font-size:12px;color:#bbb;padding:6px 0;font-style:italic">Aucun produit — ajoutez-en dans Configurer</p>`;
+    const picker=products.length?`<div class="prod-picker">${products.map(p=>`<label class="prod-check">
+      <input type="checkbox" ${(f.productIds||[]).includes(p.id)?'checked':''} onchange="toggleProd('${p.id}')">
+      <div class="prod-check-dot" style="background:${p.color}"></div>
+      <span class="prod-check-name">${p.name}</span>
+    </label>`).join('')}</div>`:`<p style="font-size:12px;color:#bbb;padding:6px 0;font-style:italic">Aucun produit — ajoutez-en dans Configurer</p>`;
     return`<div class="modal-overlay" onclick="cModal(event)"><div class="modal" onclick="event.stopPropagation()">
       <div class="modal-title">${isEdit?'Modifier la MEP':'Nouvelle mise en production'}</div>
       <span class="f-label">Nom / version</span>
       <input class="f-input" type="text" value="${f.name}" oninput="sf('name',this.value)" placeholder="Ex: Déploiement v2.5">
       <span class="f-label">Client</span>
-      ${clients.length?`<select class="f-input" onchange="sf('clientId',this.value)">${clients.map(c=>`<option value="${c.id}"${f.clientId===c.id?' selected':''}>${c.name}</option>`).join('')}</select>`:`<p style="font-size:12px;color:#bbb;padding:6px 0;font-style:italic">Aucun client — ajoutez-en dans Configurer</p>`}
-      <span class="f-label">Produits <span style="font-weight:400;color:#aaa">(un ou plusieurs)</span></span>
-      ${pickerHtml}
+      ${clients.length?`<select class="f-input" onchange="sf('clientId',this.value)">${clients.map(c=>`<option value="${c.id}"${f.clientId===c.id?' selected':''}>${c.name}</option>`).join('')}</select>`:`<p style="font-size:12px;color:#bbb;padding:6px 0;font-style:italic">Ajoutez des clients dans Configurer</p>`}
+      <span class="f-label">Produits <span style="font-weight:400;color:#ccc">(un ou plusieurs)</span></span>
+      ${picker}
       <span class="f-label">Date de mise en production</span>
       <input class="f-input" type="date" value="${f.date}" onchange="sf('date',this.value)">
       <span class="f-label">Environnement</span>
@@ -388,24 +407,26 @@ function renderModal(){
       <div style="display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:99px;font-size:12px;font-weight:600;margin-bottom:14px;background:${st.bg};color:${st.color}">
         <span style="width:8px;height:8px;border-radius:50%;background:${st.color};display:inline-block"></span>${st.label}
       </div>
-      <div class="detail-row"><span class="detail-label">Client</span>${cli?`<span class="tag" style="background:${c}22;color:${c}">${cli.name}</span>`:'-'}</div>
+      <div class="detail-row"><span class="detail-label">Client</span>${cli?`<span class="tag" style="background:${c}18;color:${c}">${cli.name}</span>`:'-'}</div>
       <div class="detail-row"><span class="detail-label">Produits</span><div class="prod-tags">${prodTagsHtml(pids)}</div></div>
       <div class="detail-row"><span class="detail-label">Date</span><span>${new Date(r.date+'T00:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</span></div>
       <div class="detail-row"><span class="detail-label">Environnement</span><span>${r.env}</span></div>
-      ${r.note?`<div class="detail-row"><span class="detail-label">Note</span><span style="color:#666">${r.note}</span></div>`:''}
+      ${r.note?`<div class="detail-row"><span class="detail-label">Note</span><span style="color:#888;font-size:13px">${r.note}</span></div>`:''}
       <div class="modal-actions"><button class="btn" onclick="cModal()">Fermer</button></div>
     </div></div>`;
   }
   return'';
 }
 
+/* ── SETTINGS ── */
 function renderSettings(){
   const tab=S.stab;
   const usageC=id=>releases.filter(r=>r.clientId===id).length;
   const usageP=id=>releases.filter(r=>(r.productIds||[]).includes(id)).length;
   let body='';
   if(tab==='clients'){
-    const rows=clients.map(c=>{
+    body=`<div class="section-title">Clients (${clients.length})</div>
+    <div class="entity-list">${clients.map(c=>{
       const n=usageC(c.id);
       if(S.editingClientId===c.id)return`<div class="entity-row">
         <input type="color" class="cpick" value="${S.editingClientColor}" oninput="S.editingClientColor=this.value">
@@ -417,16 +438,13 @@ function renderSettings(){
       </div>`;
       return`<div class="entity-row">
         <div class="e-dot" style="background:${c.color}"></div>
-        <span class="e-name">${c.name}</span>
-        <span class="e-count">${n} MEP${n>1?'s':''}</span>
+        <span class="e-name">${c.name}</span><span class="e-count">${n} MEP${n>1?'s':''}</span>
         <div class="e-actions">
-          <button class="act-edit" title="Renommer" onclick="startEditClient('${c.id}')"><i class="ti ti-pencil"></i></button>
-          <button class="act-del" title="Supprimer" onclick="deleteClient('${c.id}')"><i class="ti ti-trash"></i></button>
+          <button class="act-edit" onclick="startEditClient('${c.id}')"><i class="ti ti-pencil"></i></button>
+          <button class="act-del" onclick="deleteClient('${c.id}')"><i class="ti ti-trash"></i></button>
         </div>
       </div>`;
-    }).join('');
-    body=`<div class="section-title">Clients <span class="section-count">${clients.length}</span></div>
-    <div class="entity-list">${rows||`<p class="no-entries">Aucun client — ajoutez-en ci-dessous</p>`}</div>
+    }).join('')||`<p class="no-entries">Aucun client</p>`}</div>
     <div class="add-zone"><div class="add-zone-label">Ajouter un client</div>
       <div class="add-row">
         <input type="color" class="cpick" value="${S.newClientColor}" oninput="S.newClientColor=this.value">
@@ -435,7 +453,8 @@ function renderSettings(){
       </div>
     </div>`;
   } else if(tab==='products'){
-    const rows=products.map(p=>{
+    body=`<div class="section-title">Produits (${products.length})</div>
+    <div class="entity-list">${products.map(p=>{
       const n=usageP(p.id);
       if(S.editingProdId===p.id)return`<div class="entity-row">
         <input type="color" class="cpick" value="${S.editingProdColor}" oninput="S.editingProdColor=this.value">
@@ -447,16 +466,13 @@ function renderSettings(){
       </div>`;
       return`<div class="entity-row">
         <div class="e-dot" style="background:${p.color}"></div>
-        <span class="e-name">${p.name}</span>
-        <span class="e-count">${n} MEP${n>1?'s':''}</span>
+        <span class="e-name">${p.name}</span><span class="e-count">${n} MEP${n>1?'s':''}</span>
         <div class="e-actions">
-          <button class="act-edit" title="Renommer" onclick="startEditProd('${p.id}')"><i class="ti ti-pencil"></i></button>
-          <button class="act-del" title="Supprimer" onclick="deleteProd('${p.id}')"><i class="ti ti-trash"></i></button>
+          <button class="act-edit" onclick="startEditProd('${p.id}')"><i class="ti ti-pencil"></i></button>
+          <button class="act-del" onclick="deleteProd('${p.id}')"><i class="ti ti-trash"></i></button>
         </div>
       </div>`;
-    }).join('');
-    body=`<div class="section-title">Produits <span class="section-count">${products.length}</span></div>
-    <div class="entity-list">${rows||`<p class="no-entries">Aucun produit — ajoutez-en ci-dessous</p>`}</div>
+    }).join('')||`<p class="no-entries">Aucun produit</p>`}</div>
     <div class="add-zone"><div class="add-zone-label">Ajouter un produit</div>
       <div class="add-row">
         <input type="color" class="cpick" value="${S.newProdColor}" oninput="S.newProdColor=this.value">
@@ -473,16 +489,18 @@ function renderSettings(){
     </div>`).join('')}</div>
     <p style="font-size:12px;color:#bbb;font-style:italic">Statuts fixes — définis par le processus MDR.</p>`;
   }
-  return`<div class="settings-panel">
-    <div class="stabs">
-      <div class="stab${tab==='clients'?' active':''}" onclick="S.stab='clients';render()"><i class="ti ti-building-hospital"></i> Clients</div>
-      <div class="stab${tab==='products'?' active':''}" onclick="S.stab='products';render()"><i class="ti ti-box"></i> Produits</div>
-      <div class="stab${tab==='statuses'?' active':''}" onclick="S.stab='statuses';render()"><i class="ti ti-flag"></i> Statuts</div>
-    </div>
-    <div class="sbody">${body}</div>
-    <div class="settings-footer">
-      <span style="font-size:12px;color:#bbb"><i class="ti ti-cloud" style="vertical-align:-2px;margin-right:5px"></i>Synchronisé avec Supabase</span>
-      <button class="btn btn-muted btn-sm" onclick="loadAll()"><i class="ti ti-refresh"></i> Actualiser</button>
+  return`<div class="settings-wrap">
+    <div class="settings-panel">
+      <div class="stabs">
+        <div class="stab${tab==='clients'?' active':''}" onclick="S.stab='clients';render()"><i class="ti ti-building-hospital"></i> Clients</div>
+        <div class="stab${tab==='products'?' active':''}" onclick="S.stab='products';render()"><i class="ti ti-box"></i> Produits</div>
+        <div class="stab${tab==='statuses'?' active':''}" onclick="S.stab='statuses';render()"><i class="ti ti-flag"></i> Statuts</div>
+      </div>
+      <div class="sbody">${body}</div>
+      <div class="settings-footer">
+        <span style="font-size:12px;color:#bbb"><i class="ti ti-cloud" style="vertical-align:-2px;margin-right:5px"></i>Synchronisé avec Supabase</span>
+        <button class="btn btn-ghost btn-sm" onclick="loadAll()"><i class="ti ti-refresh"></i> Actualiser</button>
+      </div>
     </div>
   </div>`;
 }
@@ -503,75 +521,45 @@ function exportCSV(){
 }
 
 function render(){
-  const months=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-  const filt=filtered();
-  const countM=filt.filter(r=>{const d=new Date(r.date+'T00:00:00');return d.getFullYear()===S.year&&d.getMonth()===S.month}).length;
-
+  const app=document.getElementById('app');
   if(S.loading){
-    document.getElementById('app').innerHTML=`<div class="loading-screen"><div style="display:flex;justify-content:center;gap:6px;margin-bottom:16px"><span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span></div>Chargement…</div>`;
+    app.innerHTML=`<div class="loading-screen"><div class="loading-dots"><span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span></div>Chargement…</div>`;
     return;
   }
 
-  const headerHtml=`<div class="header">
+  const topbar=`<div class="topbar">
     <div>
       <div class="logo">One<em>Ortho</em></div>
       <div class="logo-sub">${S.page==='settings'?'Configuration':'Suivi des mises en production'}</div>
     </div>
-    <div class="header-actions">
-      ${S.page==='settings'?
-        `<button class="btn btn-ghost" onclick="S.page='main';render()"><i class="ti ti-arrow-left"></i> Retour</button>`:
-        `<button class="btn btn-ghost" onclick="exportCSV()"><i class="ti ti-download"></i> Export CSV</button>
-         <button class="btn btn-ghost" onclick="S.page='settings';render()"><i class="ti ti-settings"></i> Configurer</button>
-         <button class="btn btn-primary" onclick="openAdd()"><i class="ti ti-plus"></i> Nouvelle MEP</button>`}
+    <div class="topbar-actions">
+      ${S.page==='settings'
+        ?`<button class="btn btn-ghost" onclick="S.page='main';render()"><i class="ti ti-arrow-left"></i> Retour</button>`
+        :`<button class="btn btn-ghost" onclick="exportCSV()"><i class="ti ti-download"></i> <span class="lbl">Export CSV</span></button>
+          <button class="btn btn-primary" onclick="openAdd()"><i class="ti ti-plus"></i> Nouvelle MEP</button>`
+      }
     </div>
   </div>`;
 
-  if(S.page==='settings'){document.getElementById('app').innerHTML=headerHtml+renderSettings()+renderModal();return;}
+  if(S.page==='settings'){
+    app.innerHTML=topbar+renderSettings()+renderModal();
+    return;
+  }
 
-  const legendHtml=clients.length?`<div class="legend-bar">
-    <span class="legend-label">Client</span>
-    ${clients.map(c=>{const a=S.filterClient===c.id;return`<div class="legend-chip${a?' active':''}" style="color:${c.color}" onclick="S.filterClient=S.filterClient==='${c.id}'?'all':'${c.id}';render()">
-      <div class="legend-chip-dot" style="background:${c.color}"></div>${c.name}
-    </div>`;}).join('')}
-    ${S.filterClient!=='all'?`<button class="legend-clear" onclick="S.filterClient='all';render()"><i class="ti ti-x"></i> Tout</button>`:''}
-    <span class="legend-count">${countM} MEP ce mois</span>
-  </div>`:'';
-
-  const mainHtml=releases.length===0?
-    `<div class="empty-state"><i class="ti ti-rocket"></i>Commencez par ajouter vos clients et produits dans <span class="empty-strong">Configurer</span>,<br>puis créez votre première MEP en cliquant sur <span class="empty-strong">+ Nouvelle MEP</span>.</div>`:
-    (S.view==='calendar'?renderCalendar():renderList());
-
-  document.getElementById('app').innerHTML=`${headerHtml}
-    <div class="toolbar">
-      <div class="cal-nav">
-        <button class="btn btn-icon" onclick="prevM()"><i class="ti ti-chevron-left"></i></button>
-        <span class="cal-month">${months[S.month]} ${S.year}</span>
-        <button class="btn btn-icon" onclick="nextM()"><i class="ti ti-chevron-right"></i></button>
-      </div>
-      <select onchange="S.filterStatus=this.value;render()">
-        <option value="all">Tous les statuts</option>
-        ${STATUSES.map(s=>`<option value="${s.key}"${S.filterStatus===s.key?' selected':''}>${s.label}</option>`).join('')}
-      </select>
-      <div class="views">
-        <button class="view-btn${S.view==='calendar'?' active':''}" onclick="S.view='calendar';render()"><i class="ti ti-calendar"></i></button>
-        <button class="view-btn${S.view==='list'?' active':''}" onclick="S.view='list';render()"><i class="ti ti-list"></i></button>
-      </div>
+  app.innerHTML=topbar+renderKpis()+`<div class="body">
+    ${renderSidebar()}
+    <div class="main">
+      ${renderTimeline()}
     </div>
-    ${legendHtml}${mainHtml}${renderModal()}`;
+  </div>`+renderModal();
 }
 
-function prevM(){if(S.month===0){S.month=11;S.year--}else S.month--;render()}
-function nextM(){if(S.month===11){S.month=0;S.year++}else S.month++;render()}
 function openAdd(){
   const today=new Date().toISOString().slice(0,10);
   S.form={name:'',productIds:[],clientId:clients[0]?.id||'',date:today,env:'Production',status:'planned',note:''};
   S.editId=null;S.modal='form';render();
 }
-function openEdit(id){
-  const r=releases.find(x=>x.id===id);
-  S.form={...r,productIds:[...(r.productIds||[])]};
-  S.editId=id;S.modal='form';render();
-}
+function openEdit(id){const r=releases.find(x=>x.id===id);S.form={...r,productIds:[...(r.productIds||[])]};S.editId=id;S.modal='form';render()}
 function openDetail(id){S.detailId=id;S.modal='detail';render()}
 function cModal(e){if(e&&e.target!==e.currentTarget)return;S.modal=null;render()}
 function sf(k,v){S.form[k]=v}
@@ -580,26 +568,17 @@ async function saveRelease(){
   if(!S.form.name||!S.form.date){alert('Nom et date requis');return}
   if(!S.form.clientId&&clients.length)S.form.clientId=clients[0].id;
   const id=S.editId||Date.now();
-  const row=releaseToDb({...S.form,id});
-  const ok=await sbUpsert('releases',row);
+  const ok=await sbUpsert('releases',releaseToDb({...S.form,id}));
   if(!ok){alert('Erreur lors de la sauvegarde');return}
   if(S.editId){const i=releases.findIndex(x=>x.id===S.editId);releases[i]={...S.form,id:S.editId}}
   else releases.push({...S.form,id});
   S.modal=null;render();
 }
-
 async function delRelease(id){
   const ok=await sbDelete('releases','id',id);
-  if(!ok){alert('Erreur lors de la suppression');return}
+  if(!ok){alert('Erreur');return}
   releases=releases.filter(x=>x.id!==id);S.modal=null;render();
 }
-
-function clickDay(d){
-  const ds=`${S.year}-${String(S.month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-  S.form={name:'',productIds:[],clientId:clients[0]?.id||'',date:ds,env:'Production',status:'planned',note:''};
-  S.editId=null;S.modal='form';render();
-}
-
 function startEditProd(id){const p=products.find(x=>x.id===id);S.editingProdId=id;S.editingProdName=p.name;S.editingProdColor=p.color;render()}
 async function saveProd(id){
   const name=S.editingProdName.trim();if(!name)return;
@@ -610,12 +589,10 @@ async function saveProd(id){
 }
 async function deleteProd(id){
   const n=releases.filter(r=>(r.productIds||[]).includes(id)).length;
-  const msg=n>0?`Ce produit est lié à ${n} MEP(s). Le retirer de toutes ces MEPs ?`:'Supprimer ce produit ?';
-  if(!confirm(msg))return;
+  if(!confirm(n>0?`Ce produit est lié à ${n} MEP(s). Le retirer ?`:'Supprimer ?'))return;
   for(const r of releases.filter(r=>(r.productIds||[]).includes(id))){
-    const newIds=r.productIds.filter(x=>x!==id);
-    await sbPatch('releases','id',r.id,{product_ids:newIds});
-    r.productIds=newIds;
+    const ids=r.productIds.filter(x=>x!==id);
+    await sbPatch('releases','id',r.id,{product_ids:ids});r.productIds=ids;
   }
   const ok=await sbDelete('products','id',id);
   if(!ok){alert('Erreur');return}
@@ -624,10 +601,8 @@ async function deleteProd(id){
 async function addProd(){
   const name=S.newProdName.trim();if(!name){alert('Saisissez un nom');return}
   const id='p'+Date.now();
-  const ok=await sbUpsert('products',{id,name,color:S.newProdColor});
-  if(!ok){alert('Erreur');return}
-  products.push({id,name,color:S.newProdColor});
-  S.newProdName='';render();
+  if(!await sbUpsert('products',{id,name,color:S.newProdColor})){alert('Erreur');return}
+  products.push({id,name,color:S.newProdColor});S.newProdName='';render();
 }
 function startEditClient(id){const c=clients.find(x=>x.id===id);S.editingClientId=id;S.editingClientName=c.name;S.editingClientColor=c.color;render()}
 async function saveClient(id){
@@ -639,11 +614,9 @@ async function saveClient(id){
 }
 async function deleteClient(id){
   const n=releases.filter(r=>r.clientId===id).length;
-  const msg=n>0?`Ce client est lié à ${n} MEP(s). Supprimer quand même (les MEPs seront aussi supprimées) ?`:'Supprimer ce client ?';
-  if(!confirm(msg))return;
-  for(const r of releases.filter(r=>r.clientId===id)) await sbDelete('releases','id',r.id);
-  const ok=await sbDelete('clients','id',id);
-  if(!ok){alert('Erreur');return}
+  if(!confirm(n>0?`Ce client est lié à ${n} MEP(s). Supprimer quand même ?`:'Supprimer ?'))return;
+  for(const r of releases.filter(r=>r.clientId===id))await sbDelete('releases','id',r.id);
+  if(!await sbDelete('clients','id',id)){alert('Erreur');return}
   releases=releases.filter(r=>r.clientId!==id);
   if(S.filterClient===id)S.filterClient='all';
   clients=clients.filter(c=>c.id!==id);render();
@@ -651,10 +624,8 @@ async function deleteClient(id){
 async function addClient(){
   const name=S.newClientName.trim();if(!name){alert('Saisissez un nom');return}
   const id='c'+Date.now();
-  const ok=await sbUpsert('clients',{id,name,color:S.newClientColor});
-  if(!ok){alert('Erreur');return}
-  clients.push({id,name,color:S.newClientColor});
-  S.newClientName='';render();
+  if(!await sbUpsert('clients',{id,name,color:S.newClientColor})){alert('Erreur');return}
+  clients.push({id,name,color:S.newClientColor});S.newClientName='';render();
 }
 
 loadAll();
