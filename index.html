@@ -9,7 +9,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',sans-serif;background:#F8F7F4;min-height:100vh;color:#1a1a1a}
-.layout{display:grid;grid-template-rows:auto auto 1fr;min-height:100vh}
+.layout{display:grid;grid-template-rows:auto auto auto 1fr;min-height:100vh}
 
 /* ── TOPBAR ── */
 .topbar{padding:14px 24px;border-bottom:1px solid #E8E5DE;display:flex;align-items:center;justify-content:space-between;background:#fff;gap:12px;flex-wrap:wrap}
@@ -183,6 +183,27 @@ body{font-family:'Inter',sans-serif;background:#F8F7F4;min-height:100vh;color:#1
 .loading-dot:nth-child(3){animation-delay:.4s}
 @keyframes pulse{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
 
+/* ── DASHBOARD ── */
+.dashboard{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:16px 24px;background:#F8F7F4;border-bottom:1px solid #E8E5DE}
+.db-col{display:flex;flex-direction:column;gap:6px}
+.db-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#aaa;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.db-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.db-bar-label{font-size:11px;font-weight:500;color:#555;min-width:70px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.db-bar-track{flex:1;height:8px;background:#E8E5DE;border-radius:99px;overflow:hidden;position:relative}
+.db-bar-fill{height:100%;border-radius:99px;transition:width .3s}
+.db-bar-blocked{position:absolute;right:0;top:0;height:100%;background:#A32D2D44;border-radius:99px}
+.db-bar-count{font-size:11px;color:#aaa;min-width:28px;text-align:right;white-space:nowrap}
+.db-card{padding:8px 10px;border:1px solid #E8E5DE;border-radius:8px;background:#fff;cursor:pointer;transition:all .1s;margin-bottom:4px}
+.db-card:hover{border-color:#D0CEC8;background:#FAFAF7}
+.db-card-alert{border-left:3px solid #A32D2D;background:#fff8f8}
+.db-card-alert:hover{background:#fff0f0}
+.db-card-name{font-size:12px;font-weight:600;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px}
+.db-card-date{font-size:10px;color:#bbb;font-weight:500;white-space:nowrap;flex-shrink:0}
+.db-tag{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:500}
+.db-empty{font-size:12px;color:#ccc;font-style:italic;padding:4px 0}
+@media(max-width:900px){.dashboard{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.dashboard{grid-template-columns:1fr;padding:12px 16px}}
+
 /* ── RESPONSIVE ── */
 @media(max-width:1024px){
   .body{grid-template-columns:220px 1fr}
@@ -280,29 +301,117 @@ function prodTagsHtml(pids){
 function renderKpis(){
   const total=releases.length;
   const done=releases.filter(r=>r.status==='done').length;
+  const planned=releases.filter(r=>r.status==='planned').length;
   const inProgress=releases.filter(r=>r.status==='in_progress').length;
   const failed=releases.filter(r=>r.status==='failed'||r.status==='rollback').length;
+  const blocked=releases.filter(r=>r.status==='failed').length;
   const rate=total?Math.round(done/total*100):0;
+  const blockRate=total?Math.round(blocked/total*100):0;
+  // prochaine MEP
+  const today=new Date().toISOString().slice(0,10);
+  const next=releases.filter(r=>r.date>=today&&r.status==='planned').sort((a,b)=>a.date.localeCompare(b.date))[0];
+  const nextDays=next?Math.ceil((new Date(next.date+'T00:00:00')-new Date())/(1000*60*60*24)):null;
   return`<div class="kpi-strip">
     <div class="kpi">
       <div class="kpi-val">${total}</div>
       <div class="kpi-lbl">MEPs totales</div>
-      <div class="kpi-trend" style="color:#aaa">${releases.filter(r=>r.status==='planned').length} planifiées</div>
+      <div class="kpi-trend" style="color:#378ADD">${planned} planifiées · ${done} déployées</div>
     </div>
     <div class="kpi">
-      <div class="kpi-val" style="color:#004B32">${rate}%</div>
-      <div class="kpi-lbl">Taux de succès</div>
-      <div class="kpi-trend" style="color:#aaa">${done} déployées</div>
+      <div class="kpi-val" style="color:${blocked>0?'#A32D2D':'#aaa'}">${blocked}</div>
+      <div class="kpi-lbl">Bloquées</div>
+      <div class="kpi-trend" style="color:${blocked>0?'#A32D2D':'#aaa'}">${blocked>0?blockRate+'% du total':'Aucun blocage ✓'}</div>
     </div>
     <div class="kpi">
-      <div class="kpi-val" style="color:#BA7517">${inProgress}</div>
-      <div class="kpi-lbl">En cours</div>
-      <div class="kpi-trend" style="color:#aaa">Staging / Pre-prod</div>
+      <div class="kpi-val" style="color:#BA7517">${clients.length}</div>
+      <div class="kpi-lbl">Clients actifs</div>
+      <div class="kpi-trend" style="color:#aaa">${products.length} produits</div>
     </div>
     <div class="kpi">
-      <div class="kpi-val" style="color:${failed>0?'#A32D2D':'#aaa'}">${failed}</div>
-      <div class="kpi-lbl">Échecs / Rollbacks</div>
-      <div class="kpi-trend" style="color:${failed>0?'#A32D2D':'#aaa'}">${failed>0?'⚠ À surveiller':'—'}</div>
+      <div class="kpi-val" style="color:#004B32">${next?nextDays+'j':'—'}</div>
+      <div class="kpi-lbl">Prochaine MEP</div>
+      <div class="kpi-trend" style="color:#aaa">${next?next.name:'Aucune planifiée'}</div>
+    </div>
+  </div>
+  ${renderDashboard()}`;
+}
+
+/* ── DASHBOARD ── */
+function renderDashboard(){
+  const today=new Date().toISOString().slice(0,10);
+  // Répartition par produit
+  const byProd=products.map(p=>{
+    const total=releases.filter(r=>(r.productIds||[]).includes(p.id)).length;
+    const blocked=releases.filter(r=>(r.productIds||[]).includes(p.id)&&r.status==='failed').length;
+    return{...p,total,blocked};
+  }).filter(p=>p.total>0).sort((a,b)=>b.total-a.total);
+  const maxProd=Math.max(...byProd.map(p=>p.total),1);
+
+  // Répartition par client
+  const byCli=clients.map(c=>{
+    const total=releases.filter(r=>r.clientId===c.id).length;
+    const blocked=releases.filter(r=>r.clientId===c.id&&r.status==='failed').length;
+    return{...c,total,blocked};
+  }).filter(c=>c.total>0).sort((a,b)=>b.total-a.total);
+  const maxCli=Math.max(...byCli.map(c=>c.total),1);
+
+  // Prochaines MEPs (toutes les planifiées futures)
+  const upcoming=releases.filter(r=>r.date>=today&&r.status==='planned')
+    .sort((a,b)=>a.date.localeCompare(b.date)).slice(0,6);
+
+  // MEPs bloquées
+  const blockedList=releases.filter(r=>r.status==='failed')
+    .sort((a,b)=>a.date.localeCompare(b.date));
+
+  function miniCard(r,showAlert=false){
+    const c=clientColor(r.clientId);
+    const cli=clientById(r.clientId);
+    const d=new Date(r.date+'T00:00:00');
+    const ds=d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+    const pids=r.productIds||[];
+    return`<div class="db-card${showAlert?' db-card-alert':''}" onclick="openDetail(${r.id})">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
+        <span class="db-card-name">${r.name}</span>
+        <span class="db-card-date">${ds}</span>
+      </div>
+      <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">
+        ${cli?`<span class="db-tag" style="background:${c}18;color:${c}">${cli.name}</span>`:''}
+        ${pids.map(pid=>{const p=prodById(pid);return p?`<span class="db-tag" style="background:#F0EDE8;color:#666">${p.name}</span>`:''}).join('')}
+      </div>
+    </div>`;
+  }
+
+  return`<div class="dashboard">
+    <div class="db-col">
+      <div class="db-section-title"><i class="ti ti-box"></i> Par produit</div>
+      ${byProd.map(p=>`<div class="db-bar-row">
+        <div class="db-bar-label">${p.name}</div>
+        <div class="db-bar-track">
+          <div class="db-bar-fill" style="width:${(p.total/maxProd*100).toFixed(0)}%;background:${p.color}"></div>
+          ${p.blocked>0?`<div class="db-bar-blocked" style="width:${(p.blocked/maxProd*100).toFixed(0)}%"></div>`:''}
+        </div>
+        <div class="db-bar-count">${p.total}${p.blocked>0?` <span style="color:#A32D2D;font-size:9px">⚠${p.blocked}</span>`:''}</div>
+      </div>`).join('')}
+
+      <div class="db-section-title" style="margin-top:16px"><i class="ti ti-building-hospital"></i> Par client</div>
+      ${byCli.map(c=>`<div class="db-bar-row">
+        <div class="db-bar-label">${c.name}</div>
+        <div class="db-bar-track">
+          <div class="db-bar-fill" style="width:${(c.total/maxCli*100).toFixed(0)}%;background:${c.color}"></div>
+          ${c.blocked>0?`<div class="db-bar-blocked" style="width:${(c.blocked/maxCli*100).toFixed(0)}%"></div>`:''}
+        </div>
+        <div class="db-bar-count">${c.total}${c.blocked>0?` <span style="color:#A32D2D;font-size:9px">⚠${c.blocked}</span>`:''}</div>
+      </div>`).join('')}
+    </div>
+
+    <div class="db-col">
+      <div class="db-section-title"><i class="ti ti-calendar-event"></i> Prochaines MEPs</div>
+      ${upcoming.length?upcoming.map(r=>miniCard(r)).join(''):`<p class="db-empty">Aucune MEP planifiée</p>`}
+    </div>
+
+    <div class="db-col">
+      <div class="db-section-title" style="color:#A32D2D"><i class="ti ti-alert-triangle"></i> Bloquées (${blockedList.length})</div>
+      ${blockedList.length?blockedList.map(r=>miniCard(r,true)).join(''):`<p class="db-empty" style="color:#004B32">✓ Aucun blocage</p>`}
     </div>
   </div>`;
 }
