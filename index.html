@@ -3,234 +3,219 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Suivi MEP — OneOrtho Medical</title>
+<title>Suivi MEP — OneOrtho</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:#F8F7F4;min-height:100vh;color:#1a1a1a}
-.layout{display:grid;grid-template-rows:auto auto auto 1fr;min-height:100vh}
+html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:#F2F0EB;color:#1a1a1a}
+
+/* ── LAYOUT FIXE ── */
+.shell{display:grid;grid-template-rows:52px 1fr;height:100vh;overflow:hidden}
+.content{display:grid;grid-template-columns:200px 1fr 280px;overflow:hidden;min-height:0}
 
 /* ── TOPBAR ── */
-.topbar{padding:14px 24px;border-bottom:1px solid #E8E5DE;display:flex;align-items:center;justify-content:space-between;background:#fff;gap:12px;flex-wrap:wrap}
-.logo{font-family:'Sora',sans-serif;font-weight:700;font-size:17px;color:#004B32;letter-spacing:-.3px}
+.topbar{background:#fff;border-bottom:1px solid #E5E2DB;display:flex;align-items:center;justify-content:space-between;padding:0 20px;gap:12px}
+.logo{font-family:'Sora',sans-serif;font-weight:700;font-size:16px;color:#004B32;letter-spacing:-.3px;line-height:1}
 .logo em{font-style:normal;color:#AAE66E}
-.logo-sub{font-size:11px;color:#bbb;margin-top:1px}
-.topbar-actions{display:flex;gap:8px;align-items:center}
+.logo-sub{font-size:10px;color:#bbb;margin-top:1px}
+.topbar-right{display:flex;gap:8px;align-items:center}
 
-/* ── KPI STRIP ── */
-.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid #E8E5DE;background:#fff}
-.kpi{padding:14px 20px;border-right:1px solid #E8E5DE}
-.kpi:last-child{border-right:none}
-.kpi-val{font-size:24px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
-.kpi-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:#bbb;margin-top:5px}
-.kpi-trend{font-size:11px;margin-top:5px;font-weight:500}
-
-/* ── BODY (sidebar + main) ── */
-.body{display:grid;grid-template-columns:220px 1fr 260px;min-height:0}
-
-/* ── SIDEBAR ── */
-.sidebar{border-right:1px solid #E8E5DE;background:#fff;padding:16px 12px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;overflow-y:auto}
-.sb-section{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#ccc;padding:4px 8px;margin-top:12px;margin-bottom:2px}
-.sb-section:first-child{margin-top:0}
-.sb-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:7px;cursor:pointer;transition:background .1s;border:1px solid transparent}
-.sb-item:hover{background:#F8F7F4}
-.sb-item.active{background:#F0F9F5;border-color:#C8E6DA}
-.sb-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.sb-name{font-size:12px;font-weight:500;color:#333;flex:1}
-.sb-item.active .sb-name{color:#004B32;font-weight:600}
-.sb-count{font-size:10px;color:#ccc;font-weight:600;font-variant-numeric:tabular-nums}
-.sb-status{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:7px;cursor:pointer;transition:background .1s}
-.sb-status:hover{background:#F8F7F4}
-.sb-status.active{background:#F0F9F5}
-.sb-status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.sb-status-name{font-size:12px;color:#555;flex:1}
-.sb-status.active .sb-status-name{color:#004B32;font-weight:500}
-.sb-divider{height:1px;background:#E8E5DE;margin:8px 0}
-.sb-add-btn{display:flex;align-items:center;gap:6px;padding:7px 8px;border-radius:7px;cursor:pointer;font-size:12px;color:#aaa;transition:all .1s;border:1px dashed #E0DDD6;margin-top:4px;justify-content:center}
-.sb-add-btn:hover{color:#004B32;border-color:#004B32;background:#F0F9F5}
-
-/* ── MAIN CONTENT ── */
-.main{padding:16px 20px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
-
-/* ── CALENDAR ── */
-.cal-wrap{background:#fff;border-radius:12px;border:1px solid #E8E5DE;overflow:hidden}
-.cal-nav-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #E8E5DE}
-.cal-nav-title{font-family:'Sora',sans-serif;font-weight:600;font-size:14px}
-.cal-nav-btns{display:flex;gap:4px}
-.cal-head{display:grid;grid-template-columns:repeat(7,1fr);background:#F8F7F4;border-bottom:1px solid #E8E5DE}
-.cal-day-lbl{text-align:center;padding:8px 4px;font-size:10px;font-weight:600;color:#bbb;text-transform:uppercase;letter-spacing:.6px}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr)}
-.cal-cell{min-height:82px;border-right:1px solid #F0EDE6;border-bottom:1px solid #F0EDE6;padding:6px 5px;cursor:pointer;transition:background .1s}
-.cal-cell:nth-child(7n){border-right:none}
-.cal-cell:hover{background:#FAFAF7}
-.cal-cell.empty{background:#F8F7F4;cursor:default}
-.cal-cell.today-col{background:#F0F9F5}
-.day-num{font-size:11px;color:#ccc;margin-bottom:3px;width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:600}
-.day-num.today{background:#004B32;color:#fff}
-.ev-pill{font-size:9px;font-weight:600;padding:2px 6px;border-radius:4px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.ev-pill:hover{opacity:.75}
-.more-link{font-size:9px;color:#ccc;cursor:pointer;margin-top:1px}
-
-/* ── RIGHT PANEL ── */
-.right-panel{border-left:1px solid #E8E5DE;background:#fff;padding:16px 14px;overflow-y:auto}
-.rp-section{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#ccc;margin-bottom:10px;margin-top:16px}
-.rp-section:first-child{margin-top:0}
-.rp-card{padding:10px 12px;border:1px solid #E8E5DE;border-radius:8px;margin-bottom:7px;cursor:pointer;transition:all .1s;border-left-width:3px}
-.rp-card:hover{background:#FAFAF7;border-color:#D0CEC8}
-.rp-card-name{font-size:12px;font-weight:600;color:#1a1a1a;margin-bottom:4px;line-height:1.3}
-.rp-card-meta{font-size:10px;color:#bbb;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
-.rp-tag{display:inline-block;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:600}
-
-/* ── MONTH NAV ── */
-.month-nav{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
-.month-title{font-family:'Sora',sans-serif;font-size:16px;font-weight:600}
-.month-controls{display:flex;gap:8px;align-items:center}
-
-/* ── TIMELINE ── */
-.timeline{position:relative;padding-left:24px}
-.tl-line{position:absolute;left:7px;top:0;bottom:0;width:1px;background:#E8E5DE}
-.tl-month-header{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#ccc;margin-bottom:10px;margin-top:20px;display:flex;align-items:center;gap:8px}
-.tl-month-header:first-child{margin-top:0}
-.tl-month-header::after{content:'';flex:1;height:1px;background:#E8E5DE}
-.tl-item{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;position:relative}
-.tl-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-left:-24px;margin-top:10px;border:2px solid #fff;box-shadow:0 0 0 1px #E8E5DE;z-index:1;position:relative}
-.tl-card{flex:1;border:1px solid #E8E5DE;border-radius:10px;background:#fff;padding:12px 14px;cursor:pointer;transition:all .12s;border-left-width:3px}
-.tl-card:hover{border-color:#D0CEC8;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
-.tl-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
-.tl-card-name{font-size:13px;font-weight:600;color:#1a1a1a;line-height:1.3}
-.tl-card-date{font-size:11px;color:#bbb;font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums}
-.tl-card-meta{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
-.tl-tag{display:inline-block;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:600}
-.tl-note{font-size:11px;color:#aaa;margin-top:7px;padding-top:7px;border-top:1px solid #F5F3EE;line-height:1.5}
-.tl-edit-btn{opacity:0;transition:opacity .1s;background:none;border:none;cursor:pointer;color:#aaa;padding:2px 5px;border-radius:5px;font-size:12px}
-.tl-card:hover .tl-edit-btn{opacity:1}
-.tl-edit-btn:hover{background:#F8F7F4;color:#333}
-
-/* ── EMPTY ── */
-.empty-state{text-align:center;padding:4rem 2rem;color:#ccc;font-size:13px;line-height:1.8}
-.empty-state i{font-size:36px;display:block;margin-bottom:14px;color:#ddd}
-.empty-strong{font-weight:600;color:#888;background:#F0EDE8;padding:1px 7px;border-radius:5px}
-
-/* ── BUTTONS ── */
-.btn{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;padding:7px 14px;border-radius:8px;border:1px solid #E0DDD6;background:#fff;color:#333;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .12s;line-height:1;white-space:nowrap}
+/* ── BOUTONS ── */
+.btn{font-family:'Inter',sans-serif;font-size:12px;font-weight:500;padding:6px 12px;border-radius:7px;border:1px solid #E0DDD6;background:#fff;color:#333;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .12s;line-height:1;white-space:nowrap}
 .btn:hover{background:#F2EFE8;border-color:#ccc}
 .btn-primary{background:#004B32;color:#fff;border-color:#004B32}
 .btn-primary:hover{background:#003825}
 .btn-ghost{background:transparent;color:#888;border-color:#E0DDD6}
 .btn-ghost:hover{background:#F2EFE8;color:#444}
-.btn-sm{padding:5px 10px;font-size:12px}
-.btn-icon{padding:6px 9px;min-width:32px;justify-content:center}
+.btn-sm{padding:4px 8px;font-size:11px}
+.btn-icon{padding:5px 7px;min-width:28px;justify-content:center}
+
+/* ── SIDEBAR GAUCHE ── */
+.sidebar{background:#fff;border-right:1px solid #E5E2DB;display:flex;flex-direction:column;overflow:hidden}
+.sb-top{padding:12px 10px 8px;border-bottom:1px solid #E5E2DB}
+.sb-search{width:100%;font-family:'Inter',sans-serif;font-size:12px;padding:6px 10px;border-radius:7px;border:1px solid #E0DDD6;background:#F8F7F4;color:#1a1a1a;outline:none}
+.sb-search:focus{border-color:#004B32}
+.sb-scroll{flex:1;overflow-y:auto;padding:8px 10px}
+.sb-section{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#ccc;padding:2px 6px;margin-top:10px;margin-bottom:4px}
+.sb-section:first-child{margin-top:0}
+.sb-item{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:6px;cursor:pointer;transition:background .1s;border:1px solid transparent}
+.sb-item:hover{background:#F8F7F4}
+.sb-item.active{background:#F0F9F5;border-color:#C8E6DA}
+.sb-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.sb-name{font-size:12px;font-weight:500;color:#333;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-item.active .sb-name{color:#004B32;font-weight:600}
+.sb-count{font-size:10px;color:#ccc;font-weight:600}
+.sb-divider{height:1px;background:#E8E5DE;margin:6px 0}
+.sb-status{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:6px;cursor:pointer;transition:background .1s}
+.sb-status:hover{background:#F8F7F4}
+.sb-status.active{background:#F0F9F5}
+.sb-status-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.sb-status-name{font-size:12px;color:#555;flex:1}
+.sb-status.active .sb-status-name{color:#004B32;font-weight:500}
+.sb-bottom{padding:10px;border-top:1px solid #E5E2DB}
+
+/* ── ZONE CENTRALE ── */
+.main{display:flex;flex-direction:column;overflow:hidden;min-height:0}
+
+/* KPIs compact */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid #E5E2DB;background:#fff;flex-shrink:0}
+.kpi{padding:10px 14px;border-right:1px solid #E5E2DB}
+.kpi:last-child{border-right:none}
+.kpi-val{font-size:20px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.kpi-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#bbb;margin-top:3px}
+.kpi-sub{font-size:10px;margin-top:3px;font-weight:500}
+
+/* Calendrier */
+.cal-area{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:12px}
+.cal-wrap{background:#fff;border-radius:10px;border:1px solid #E5E2DB;overflow:hidden;display:flex;flex-direction:column;height:100%}
+.cal-nav-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid #E5E2DB;flex-shrink:0}
+.cal-nav-title{font-family:'Sora',sans-serif;font-weight:600;font-size:13px}
+.cal-nav-btns{display:flex;gap:4px;align-items:center}
+.cal-head{display:grid;grid-template-columns:repeat(7,1fr);background:#F8F7F4;border-bottom:1px solid #E5E2DB;flex-shrink:0}
+.cal-day-lbl{text-align:center;padding:5px 2px;font-size:9px;font-weight:700;color:#bbb;text-transform:uppercase;letter-spacing:.5px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);flex:1;overflow:hidden}
+.cal-cell{border-right:1px solid #F0EDE6;border-bottom:1px solid #F0EDE6;padding:4px 3px;cursor:pointer;transition:background .1s;overflow:hidden;display:flex;flex-direction:column}
+.cal-cell:nth-child(7n){border-right:none}
+.cal-cell:hover{background:#FAFAF7}
+.cal-cell.empty{background:#F8F7F4;cursor:default}
+.cal-cell.today-col{background:#F0F9F5}
+.day-num{font-size:10px;color:#ccc;margin-bottom:2px;width:18px;height:18px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:600;flex-shrink:0}
+.day-num.today{background:#004B32;color:#fff}
+.ev-pill{font-size:9px;font-weight:600;padding:2px 5px;border-radius:3px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;flex-shrink:0}
+.ev-pill:hover{opacity:.75}
+.more-link{font-size:9px;color:#ccc;cursor:pointer}
+
+/* ── PANNEAU DROIT (dashboard) ── */
+.rightpanel{background:#fff;border-left:1px solid #E5E2DB;display:flex;flex-direction:column;overflow:hidden}
+.rp-tabs{display:flex;border-bottom:1px solid #E5E2DB;flex-shrink:0}
+.rp-tab{flex:1;padding:10px 8px;font-size:11px;font-weight:600;color:#aaa;cursor:pointer;text-align:center;border-bottom:2px solid transparent;transition:all .12s}
+.rp-tab.active{color:#004B32;border-bottom-color:#004B32}
+.rp-body{flex:1;overflow-y:auto;padding:12px}
+
+/* Dashboard contenu */
+.dash-kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.dash-kpi{background:#F8F7F4;border-radius:8px;padding:10px 12px}
+.dash-kpi-val{font-size:18px;font-weight:600;line-height:1}
+.dash-kpi-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#bbb;margin-top:3px}
+.dash-kpi-sub{font-size:10px;color:#aaa;margin-top:2px}
+.ds-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#aaa;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.ds-bar-row{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.ds-bar-label{font-size:11px;font-weight:500;color:#444;min-width:60px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ds-bar-track{flex:1;height:6px;background:#EAE7E0;border-radius:99px;overflow:hidden;position:relative}
+.ds-bar-fill{height:100%;border-radius:99px}
+.ds-bar-blocked{position:absolute;right:0;top:0;height:100%;background:#E24B4A55;border-radius:99px}
+.ds-bar-num{font-size:10px;color:#bbb;min-width:20px;text-align:right}
+.ds-divider{height:1px;background:#E8E5DE;margin:12px 0}
+
+/* MEP cards dans le dashboard */
+.mep-card{padding:8px 10px;border:1px solid #E8E5DE;border-radius:7px;background:#fff;cursor:pointer;transition:all .1s;margin-bottom:5px;border-left:3px solid}
+.mep-card:hover{background:#FAFAF7;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.mep-card-alert{background:#fff8f8}
+.mep-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:4px}
+.mep-card-name{font-size:11px;font-weight:600;color:#1a1a1a;line-height:1.3}
+.mep-card-date{font-size:10px;color:#bbb;white-space:nowrap;flex-shrink:0}
+.mep-card-tags{display:flex;gap:3px;flex-wrap:wrap}
+.mc-tag{display:inline-block;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:600}
+
+/* Phases */
+.phases-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:6px}
+.phase-chip{padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;text-align:center;border:1px solid}
 
 /* ── SETTINGS ── */
-.settings-wrap{padding:20px 24px}
-.settings-panel{background:#fff;border-radius:12px;border:1px solid #E8E5DE;overflow:hidden}
-.stabs{display:flex;border-bottom:1px solid #E8E5DE}
-.stab{padding:13px 20px;font-size:13px;font-weight:500;cursor:pointer;color:#aaa;border-bottom:2px solid transparent;margin-bottom:-1px;display:flex;align-items:center;gap:7px;transition:all .12s;white-space:nowrap}
-.stab:hover:not(.active){color:#555}
+.settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:100;display:flex;align-items:flex-start;justify-content:flex-end;backdrop-filter:blur(2px)}
+.settings-drawer{background:#fff;width:400px;height:100%;display:flex;flex-direction:column;box-shadow:-4px 0 20px rgba(0,0,0,0.1)}
+.settings-head{padding:14px 16px;border-bottom:1px solid #E5E2DB;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.settings-head-title{font-family:'Sora',sans-serif;font-weight:600;font-size:14px}
+.stabs{display:flex;border-bottom:1px solid #E5E2DB;flex-shrink:0}
+.stab{flex:1;padding:10px 8px;font-size:12px;font-weight:500;cursor:pointer;color:#aaa;border-bottom:2px solid transparent;text-align:center;transition:all .12s}
 .stab.active{color:#004B32;border-bottom-color:#004B32;font-weight:600}
-.sbody{padding:1.75rem}
-.section-title{font-size:11px;font-weight:700;color:#bbb;text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px}
-.entity-list{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
-.entity-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border:1px solid #EAE7E0;border-radius:9px;background:#fff;transition:all .1s}
+.settings-body{flex:1;overflow-y:auto;padding:16px}
+.section-title{font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px}
+.entity-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.entity-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid #EAE7E0;border-radius:8px;background:#fff;transition:all .1s}
 .entity-row:hover{border-color:#D0CEC8;background:#FAFAF7}
-.e-dot{width:16px;height:16px;border-radius:50%;flex-shrink:0}
-.e-name{flex:1;font-size:13px;font-weight:500;color:#1a1a1a}
-.e-count{font-size:11px;color:#ccc;font-weight:500}
-.e-actions{display:flex;gap:5px;flex-shrink:0}
-.act-edit{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:7px;border:1px solid #E0DDD6;background:#fff;cursor:pointer;color:#aaa;font-size:14px;transition:all .12s}
+.e-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+.e-name{flex:1;font-size:12px;font-weight:500}
+.e-count{font-size:10px;color:#ccc}
+.e-actions{display:flex;gap:4px}
+.act-edit{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;border:1px solid #E0DDD6;background:#fff;cursor:pointer;color:#aaa;font-size:13px;transition:all .12s}
 .act-edit:hover{background:#F0FAF5;border-color:#004B32;color:#004B32}
-.act-del{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:7px;border:1px solid #F5DADA;background:#FFF8F8;cursor:pointer;color:#E24B4A;font-size:14px;transition:all .12s}
+.act-del{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;border:1px solid #F5DADA;background:#FFF8F8;cursor:pointer;color:#E24B4A;font-size:13px;transition:all .12s}
 .act-del:hover{background:#E24B4A;border-color:#E24B4A;color:#fff}
-.add-zone{background:#FAFAF7;border-radius:9px;padding:14px;border:1px dashed #DDD9D2;margin-top:6px}
-.add-zone-label{font-size:10px;font-weight:700;color:#ccc;text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px}
-.add-row{display:flex;gap:8px;align-items:center}
-.cpick{width:38px;height:36px;border:1px solid #E0DDD6;border-radius:7px;cursor:pointer;padding:3px;background:#fff;flex-shrink:0}
-.add-input{flex:1;font-family:'Inter',sans-serif;font-size:13px;padding:8px 11px;border-radius:8px;border:1px solid #E0DDD6;background:#fff;color:#1a1a1a;transition:border-color .12s}
-.add-input:focus{outline:none;border-color:#004B32;box-shadow:0 0 0 3px rgba(0,75,50,0.07)}
-.inline-edit-row{display:flex;gap:8px;align-items:center;flex:1}
-.inline-edit-input{flex:1;font-family:'Inter',sans-serif;font-size:13px;padding:7px 10px;border-radius:8px;border:1px solid #AAE66E;background:#F5FDF0;color:#1a1a1a;outline:none}
-.settings-footer{padding:12px 20px;border-top:1px solid #F0EDE6;display:flex;align-items:center;justify-content:space-between;background:#FAFAF7}
-.no-entries{font-size:13px;color:#ccc;padding:8px 0;font-style:italic}
+.add-zone{background:#FAFAF7;border-radius:8px;padding:12px;border:1px dashed #DDD9D2;margin-top:4px}
+.add-zone-label{font-size:9px;font-weight:700;color:#ccc;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.add-row{display:flex;gap:6px;align-items:center}
+.cpick{width:34px;height:32px;border:1px solid #E0DDD6;border-radius:6px;cursor:pointer;padding:2px;background:#fff;flex-shrink:0}
+.add-input{flex:1;font-family:'Inter',sans-serif;font-size:12px;padding:7px 10px;border-radius:7px;border:1px solid #E0DDD6;background:#fff;color:#1a1a1a}
+.add-input:focus{outline:none;border-color:#004B32}
+.inline-edit-row{display:flex;gap:6px;align-items:center;flex:1}
+.inline-edit-input{flex:1;font-family:'Inter',sans-serif;font-size:12px;padding:5px 8px;border-radius:7px;border:1px solid #AAE66E;background:#F5FDF0;color:#1a1a1a;outline:none}
+.no-entries{font-size:12px;color:#ccc;padding:6px 0;font-style:italic}
+.settings-footer{padding:10px 16px;border-top:1px solid #E5E2DB;display:flex;gap:6px;justify-content:flex-end;flex-shrink:0}
 
-/* ── MODAL ── */
+/* ── MODAL MEP ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem;backdrop-filter:blur(2px)}
-.modal{background:#fff;border-radius:14px;padding:2rem;width:440px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 4px 40px rgba(0,0,0,0.12)}
-.modal-title{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:#1a1a1a;margin-bottom:1.5rem}
-.f-label{font-size:11px;color:#aaa;display:block;margin-bottom:5px;margin-top:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
-.f-input{width:100%;font-family:'Inter',sans-serif;font-size:13px;padding:9px 12px;border-radius:8px;border:1px solid #E0DDD6;background:#fff;color:#1a1a1a;transition:border-color .12s}
+.modal{background:#fff;border-radius:12px;padding:1.5rem;width:460px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 4px 32px rgba(0,0,0,0.12)}
+.modal-title{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;margin-bottom:1.25rem}
+.f-label{font-size:10px;color:#aaa;display:block;margin-bottom:4px;margin-top:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.f-input{width:100%;font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:7px;border:1px solid #E0DDD6;background:#fff;color:#1a1a1a}
 .f-input:focus{outline:none;border-color:#004B32;box-shadow:0 0 0 3px rgba(0,75,50,0.07)}
-.f-textarea{width:100%;font-family:'Inter',sans-serif;font-size:13px;padding:9px 12px;border-radius:8px;border:1px solid #E0DDD6;background:#fff;color:#1a1a1a;resize:vertical;min-height:64px}
-.f-textarea:focus{outline:none;border-color:#004B32;box-shadow:0 0 0 3px rgba(0,75,50,0.07)}
-.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #F0EDE6}
-.detail-row{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #F5F3EE;font-size:13px}
+.f-textarea{width:100%;font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:7px;border:1px solid #E0DDD6;background:#fff;color:#1a1a1a;resize:vertical;min-height:56px}
+.modal-actions{display:flex;gap:6px;justify-content:flex-end;margin-top:1.25rem;padding-top:1rem;border-top:1px solid #F0EDE6}
+.detail-row{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #F5F3EE;font-size:12px}
 .detail-row:last-child{border-bottom:none}
-.detail-label{color:#bbb;min-width:90px;font-size:11px;flex-shrink:0;font-weight:600;text-transform:uppercase;letter-spacing:.4px;padding-top:2px}
-.prod-picker{display:flex;flex-direction:column;gap:2px;padding:6px;background:#fff;border-radius:8px;border:1px solid #E0DDD6;max-height:160px;overflow-y:auto}
-.prod-check{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:6px;cursor:pointer;transition:background .1s;user-select:none}
+.detail-label{color:#bbb;min-width:80px;font-size:10px;flex-shrink:0;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding-top:2px}
+.prod-picker{display:flex;flex-direction:column;gap:2px;padding:5px;background:#fff;border-radius:7px;border:1px solid #E0DDD6;max-height:130px;overflow-y:auto}
+.prod-check{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:5px;cursor:pointer;user-select:none}
 .prod-check:hover{background:#F8F7F4}
-.prod-check input[type=checkbox]{width:15px;height:15px;accent-color:#004B32;cursor:pointer;flex-shrink:0}
-.prod-check-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.prod-check-name{font-size:13px;color:#333}
-.prod-tags{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
-.tag{display:inline-block;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:500;flex-shrink:0}
+.prod-check input{width:13px;height:13px;accent-color:#004B32;cursor:pointer;flex-shrink:0}
+.prod-check-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.prod-check-name{font-size:12px;color:#333}
+.tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600}
 
-/* ── LOADING ── */
-.loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5rem 2rem;color:#ccc;font-size:13px;gap:14px}
-.loading-dots{display:flex;gap:6px}
-.loading-dot{width:8px;height:8px;border-radius:50%;background:#AAE66E;animation:pulse 1.2s ease-in-out infinite}
+/* Phases detail */
+.phases-section{margin-top:10px;padding-top:10px;border-top:1px solid #F0EDE6}
+.phases-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#bbb;margin-bottom:8px}
+.phases-row{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.phase-item{padding:5px 8px;border-radius:5px;border:1px solid}
+.phase-item-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.phase-item-val{font-size:11px;font-weight:500}
+
+/* Phases form */
+.phases-form{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.phase-select-wrap{display:flex;flex-direction:column;gap:3px}
+.phase-select-lbl{font-size:10px;color:#aaa;font-weight:600}
+
+/* Loading */
+.loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#ccc;font-size:12px;gap:12px}
+.loading-dots{display:flex;gap:5px}
+.loading-dot{width:7px;height:7px;border-radius:50%;background:#AAE66E;animation:pulse 1.2s ease-in-out infinite}
 .loading-dot:nth-child(2){animation-delay:.2s}
 .loading-dot:nth-child(3){animation-delay:.4s}
 @keyframes pulse{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
 
-/* ── DASHBOARD ── */
-.dashboard{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:16px 24px;background:#F8F7F4;border-bottom:1px solid #E8E5DE}
-.db-col{display:flex;flex-direction:column;gap:6px}
-.db-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#aaa;margin-bottom:6px;display:flex;align-items:center;gap:6px}
-.db-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
-.db-bar-label{font-size:11px;font-weight:500;color:#555;min-width:70px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.db-bar-track{flex:1;height:8px;background:#E8E5DE;border-radius:99px;overflow:hidden;position:relative}
-.db-bar-fill{height:100%;border-radius:99px;transition:width .3s}
-.db-bar-blocked{position:absolute;right:0;top:0;height:100%;background:#A32D2D44;border-radius:99px}
-.db-bar-count{font-size:11px;color:#aaa;min-width:28px;text-align:right;white-space:nowrap}
-.db-card{padding:8px 10px;border:1px solid #E8E5DE;border-radius:8px;background:#fff;cursor:pointer;transition:all .1s;margin-bottom:4px}
-.db-card:hover{border-color:#D0CEC8;background:#FAFAF7}
-.db-card-alert{border-left:3px solid #A32D2D;background:#fff8f8}
-.db-card-alert:hover{background:#fff0f0}
-.db-card-name{font-size:12px;font-weight:600;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px}
-.db-card-date{font-size:10px;color:#bbb;font-weight:500;white-space:nowrap;flex-shrink:0}
-.db-tag{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:500}
-.db-empty{font-size:12px;color:#ccc;font-style:italic;padding:4px 0}
-@media(max-width:900px){.dashboard{grid-template-columns:1fr 1fr}}
-@media(max-width:640px){.dashboard{grid-template-columns:1fr;padding:12px 16px}}
+/* Scrollbar fine */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#E0DDD6;border-radius:99px}
 
-/* ── RESPONSIVE ── */
-@media(max-width:1024px){
-  .body{grid-template-columns:220px 1fr}
-  .right-panel{display:none}
+/* Responsive tablet */
+@media(max-width:900px){
+  .content{grid-template-columns:180px 1fr 0}
+  .rightpanel{display:none}
 }
-@media(max-width:768px){
-  .kpi-strip{grid-template-columns:repeat(2,1fr)}
-  .kpi:nth-child(2){border-right:none}
-  .kpi:nth-child(3){border-top:1px solid #E8E5DE}
-  .kpi:nth-child(4){border-top:1px solid #E8E5DE;border-right:none}
-  .body{grid-template-columns:1fr}
+@media(max-width:640px){
+  .content{grid-template-columns:0 1fr 0}
   .sidebar{display:none}
-  .right-panel{display:none}
-  .main{padding:14px 16px}
-  .topbar{padding:12px 16px}
-  .kpi{padding:12px 16px}
-}
-@media(max-width:480px){
-  .kpi-strip{grid-template-columns:repeat(2,1fr)}
-  .kpi-val{font-size:20px}
-  .modal-overlay{align-items:flex-end;padding:0}
-  .modal{border-radius:16px 16px 0 0;width:100%;max-width:100%;padding:1.5rem 1.25rem;max-height:92vh}
+  .rightpanel{display:none}
 }
 </style>
 </head>
 <body>
-<div class="layout" id="app"></div>
+<div class="shell" id="app">
+  <div class="loading-screen"><div class="loading-dots"><span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span></div>Chargement…</div>
+</div>
 <script>
 const SB_URL='https://odsvvwmtlkglpjqeqjjq.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kc3Z2d210bGtnbHBqcWVxampxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTc2NjEsImV4cCI6MjA5NDkzMzY2MX0.aA2LxUE9N8ZYF_p4W2SEOyMS-OVIIlGPSRFGXZKKKMU';
@@ -241,28 +226,40 @@ async function sbUpsert(t,row){const r=await fetch(`${SB_URL}/rest/v1/${t}`,{met
 async function sbDelete(t,col,val){const r=await fetch(`${SB_URL}/rest/v1/${t}?${col}=eq.${encodeURIComponent(val)}`,{method:'DELETE',headers:H});return r.ok}
 async function sbPatch(t,col,val,data){const r=await fetch(`${SB_URL}/rest/v1/${t}?${col}=eq.${encodeURIComponent(val)}`,{method:'PATCH',headers:H,body:JSON.stringify(data)});return r.ok}
 
-function dbToRelease(r){return{id:r.id,name:r.name,clientId:r.client_id,productIds:r.product_ids||[],date:r.date,env:r.env,status:r.status,note:r.note||''}}
-function releaseToDb(r){return{id:r.id,name:r.name,client_id:r.clientId,product_ids:r.productIds||[],date:r.date,env:r.env,status:r.status,note:r.note||''}}
+function dbToRelease(r){return{id:r.id,name:r.name,clientId:r.client_id,productIds:r.product_ids||[],date:r.date,env:r.env,status:r.status,note:r.note||'',phase2:r.phase2||'',phase4:r.phase4||'',phase6:r.phase6||'',rapports:r.rapports||''}}
+function releaseToDb(r){return{id:r.id,name:r.name,client_id:r.clientId,product_ids:r.productIds||[],date:r.date,env:r.env,status:r.status,note:r.note||'',phase2:r.phase2||'',phase4:r.phase4||'',phase6:r.phase6||'',rapports:r.rapports||''}}
 
 const STATUSES=[
   {key:'planned',label:'Planifiée',color:'#378ADD',bg:'#e6f1fb'},
   {key:'in_progress',label:'En cours',color:'#BA7517',bg:'#faeeda'},
   {key:'done',label:'Déployée',color:'#004B32',bg:'#e1f5ee'},
-  {key:'failed',label:'Échouée',color:'#A32D2D',bg:'#fcebeb'},
+  {key:'failed',label:'Bloquée',color:'#A32D2D',bg:'#fcebeb'},
   {key:'rollback',label:'Rollback',color:'#702D5A',bg:'#f5e8f2'}
 ];
-function stOf(k){return STATUSES.find(s=>s.key===k)||STATUSES[0]}
+const PHASE_VALS=['','À faire','En cours','A exporter','A signer','Signé','N/A'];
+function phaseColor(v){
+  if(!v||v==='')return{bg:'#F8F7F4',border:'#E0DDD6',color:'#bbb'};
+  if(v==='Signé'||v==='🎉 Signé')return{bg:'#e1f5ee',border:'#A8D9C0',color:'#004B32'};
+  if(v==='À faire'||v==='A faire')return{bg:'#faeeda',border:'#F0C87A',color:'#BA7517'};
+  if(v==='En cours')return{bg:'#e6f1fb',border:'#A8C8F0',color:'#378ADD'};
+  if(v==='A exporter')return{bg:'#f5e8f2',border:'#D4AECE',color:'#702D5A'};
+  if(v==='A signer')return{bg:'#fff3cd',border:'#F0C87A',color:'#856404'};
+  if(v==='N/A')return{bg:'#F8F7F4',border:'#E0DDD6',color:'#bbb'};
+  return{bg:'#F8F7F4',border:'#E0DDD6',color:'#888'};
+}
 
+function stOf(k){return STATUSES.find(s=>s.key===k)||STATUSES[0]}
 let products=[],clients=[],releases=[];
 function prodById(id){return products.find(p=>p.id===id)}
 function clientById(id){return clients.find(c=>c.id===id)}
 function clientColor(cid){return(clientById(cid)||{color:'#aaa'}).color}
 
+let calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
 let S={
-  filterClient:'all',filterStatus:'all',
-  page:'main',stab:'clients',
-  modal:null,editId:null,detailId:null,loading:false,
-  form:{name:'',productIds:[],clientId:'',date:'',env:'Production',status:'planned',note:''},
+  filterClient:'all',filterStatus:'all',search:'',
+  page:'main',stab:'clients',rpTab:'dashboard',
+  modal:null,editId:null,detailId:null,
+  form:{name:'',productIds:[],clientId:'',date:'',env:'Production',status:'planned',note:'',phase2:'',phase4:'',phase6:'',rapports:''},
   editingProdId:null,editingProdName:'',editingProdColor:'',
   editingClientId:null,editingClientName:'',editingClientColor:'',
   newProdName:'',newProdColor:'#9F8AEA',
@@ -270,148 +267,87 @@ let S={
 };
 
 async function loadAll(){
-  S.loading=true;render();
-  try{
-    const [c,p,r]=await Promise.all([sbGet('clients'),sbGet('products'),sbGet('releases')]);
-    clients=c||[];products=p||[];releases=(r||[]).map(dbToRelease);
-  }catch(e){console.error(e)}
-  S.loading=false;render();
+  render();
+  const[c,p,r]=await Promise.all([sbGet('clients'),sbGet('products'),sbGet('releases')]);
+  clients=c||[];products=p||[];releases=(r||[]).map(dbToRelease);
+  render();
 }
 
 function filtered(){
   return releases.filter(r=>{
     if(S.filterClient!=='all'&&r.clientId!==S.filterClient)return false;
     if(S.filterStatus!=='all'&&r.status!==S.filterStatus)return false;
+    if(S.search){
+      const q=S.search.toLowerCase();
+      const cli=clientById(r.clientId);
+      if(!r.name.toLowerCase().includes(q)&&!(cli&&cli.name.toLowerCase().includes(q)))return false;
+    }
     return true;
   });
 }
+function toggleProd(pid){const ids=S.form.productIds;S.form.productIds=ids.includes(pid)?ids.filter(x=>x!==pid):[...ids,pid];render()}
 
-function toggleProd(pid){
-  const ids=S.form.productIds;
-  S.form.productIds=ids.includes(pid)?ids.filter(x=>x!==pid):[...ids,pid];
-  render();
-}
+/* ── RENDER PRINCIPAL ── */
+function render(){
+  const app=document.getElementById('app');
+  const loading=!clients.length&&!products.length&&!releases.length;
 
-function prodTagsHtml(pids){
-  if(!pids||!pids.length)return`<span style="color:#bbb;font-size:12px;font-style:italic">Aucun</span>`;
-  return pids.map(pid=>{const p=prodById(pid);return p?`<span class="tag" style="background:#F0EDE8;color:#666">${p.name}</span>`:''}).join('');
+  const topbar=`<div class="topbar">
+    <div>
+      <div class="logo">One<em>Ortho</em></div>
+      <div class="logo-sub">Suivi des mises en production</div>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost btn-sm" onclick="exportCSV()"><i class="ti ti-download"></i> Export</button>
+      <button class="btn btn-ghost btn-sm" onclick="S.page='settings';render()"><i class="ti ti-settings"></i> Configurer</button>
+      <button class="btn btn-primary btn-sm" onclick="openAdd()"><i class="ti ti-plus"></i> Nouvelle MEP</button>
+    </div>
+  </div>`;
+
+  if(S.page==='settings'){
+    app.innerHTML=topbar+`<div style="flex:1;overflow:auto;padding:20px">${renderSettingsInline()}</div>`+renderModal();
+    return;
+  }
+
+  app.innerHTML=topbar+`<div class="content">
+    ${renderSidebar()}
+    <div class="main">
+      ${renderKpis()}
+      <div class="cal-area">${loading?`<div class="loading-screen"><div class="loading-dots"><span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span></div>Chargement…</div>`:renderCalendar()}</div>
+    </div>
+    ${renderRightPanel()}
+  </div>`+renderModal()+(S.page==='settings'?renderSettingsDrawer():'');
 }
 
 /* ── KPIs ── */
 function renderKpis(){
   const total=releases.length;
-  const done=releases.filter(r=>r.status==='done').length;
   const planned=releases.filter(r=>r.status==='planned').length;
-  const inProgress=releases.filter(r=>r.status==='in_progress').length;
-  const failed=releases.filter(r=>r.status==='failed'||r.status==='rollback').length;
   const blocked=releases.filter(r=>r.status==='failed').length;
-  const rate=total?Math.round(done/total*100):0;
-  const blockRate=total?Math.round(blocked/total*100):0;
-  // prochaine MEP
+  const done=releases.filter(r=>r.status==='done').length;
   const today=new Date().toISOString().slice(0,10);
   const next=releases.filter(r=>r.date>=today&&r.status==='planned').sort((a,b)=>a.date.localeCompare(b.date))[0];
   const nextDays=next?Math.ceil((new Date(next.date+'T00:00:00')-new Date())/(1000*60*60*24)):null;
-  return`<div class="kpi-strip">
+  return`<div class="kpi-row">
     <div class="kpi">
       <div class="kpi-val">${total}</div>
-      <div class="kpi-lbl">MEPs totales</div>
-      <div class="kpi-trend" style="color:#378ADD">${planned} planifiées · ${done} déployées</div>
+      <div class="kpi-lbl">MEPs</div>
+      <div class="kpi-sub" style="color:#378ADD">${planned} planifiées</div>
     </div>
     <div class="kpi">
-      <div class="kpi-val" style="color:${blocked>0?'#A32D2D':'#aaa'}">${blocked}</div>
+      <div class="kpi-val" style="color:${blocked>0?'#A32D2D':'#bbb'}">${blocked}</div>
       <div class="kpi-lbl">Bloquées</div>
-      <div class="kpi-trend" style="color:${blocked>0?'#A32D2D':'#aaa'}">${blocked>0?blockRate+'% du total':'Aucun blocage ✓'}</div>
+      <div class="kpi-sub" style="color:${blocked>0?'#A32D2D':'#bbb'}">${blocked>0?'⚠ Action requise':'Aucun blocage ✓'}</div>
     </div>
     <div class="kpi">
-      <div class="kpi-val" style="color:#BA7517">${clients.length}</div>
-      <div class="kpi-lbl">Clients actifs</div>
-      <div class="kpi-trend" style="color:#aaa">${products.length} produits</div>
+      <div class="kpi-val" style="color:#004B32">${done}</div>
+      <div class="kpi-lbl">Déployées</div>
+      <div class="kpi-sub" style="color:#aaa">${total?Math.round(done/total*100):0}% taux succès</div>
     </div>
     <div class="kpi">
-      <div class="kpi-val" style="color:#004B32">${next?nextDays+'j':'—'}</div>
+      <div class="kpi-val" style="color:${next?'#1a1a1a':'#bbb'}">${next?nextDays+'j':'—'}</div>
       <div class="kpi-lbl">Prochaine MEP</div>
-      <div class="kpi-trend" style="color:#aaa">${next?next.name:'Aucune planifiée'}</div>
-    </div>
-  </div>
-  ${renderDashboard()}`;
-}
-
-/* ── DASHBOARD ── */
-function renderDashboard(){
-  const today=new Date().toISOString().slice(0,10);
-  // Répartition par produit
-  const byProd=products.map(p=>{
-    const total=releases.filter(r=>(r.productIds||[]).includes(p.id)).length;
-    const blocked=releases.filter(r=>(r.productIds||[]).includes(p.id)&&r.status==='failed').length;
-    return{...p,total,blocked};
-  }).filter(p=>p.total>0).sort((a,b)=>b.total-a.total);
-  const maxProd=Math.max(...byProd.map(p=>p.total),1);
-
-  // Répartition par client
-  const byCli=clients.map(c=>{
-    const total=releases.filter(r=>r.clientId===c.id).length;
-    const blocked=releases.filter(r=>r.clientId===c.id&&r.status==='failed').length;
-    return{...c,total,blocked};
-  }).filter(c=>c.total>0).sort((a,b)=>b.total-a.total);
-  const maxCli=Math.max(...byCli.map(c=>c.total),1);
-
-  // Prochaines MEPs (toutes les planifiées futures)
-  const upcoming=releases.filter(r=>r.date>=today&&r.status==='planned')
-    .sort((a,b)=>a.date.localeCompare(b.date)).slice(0,6);
-
-  // MEPs bloquées
-  const blockedList=releases.filter(r=>r.status==='failed')
-    .sort((a,b)=>a.date.localeCompare(b.date));
-
-  function miniCard(r,showAlert=false){
-    const c=clientColor(r.clientId);
-    const cli=clientById(r.clientId);
-    const d=new Date(r.date+'T00:00:00');
-    const ds=d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
-    const pids=r.productIds||[];
-    return`<div class="db-card${showAlert?' db-card-alert':''}" onclick="openDetail(${r.id})">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
-        <span class="db-card-name">${r.name}</span>
-        <span class="db-card-date">${ds}</span>
-      </div>
-      <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">
-        ${cli?`<span class="db-tag" style="background:${c}18;color:${c}">${cli.name}</span>`:''}
-        ${pids.map(pid=>{const p=prodById(pid);return p?`<span class="db-tag" style="background:#F0EDE8;color:#666">${p.name}</span>`:''}).join('')}
-      </div>
-    </div>`;
-  }
-
-  return`<div class="dashboard">
-    <div class="db-col">
-      <div class="db-section-title"><i class="ti ti-box"></i> Par produit</div>
-      ${byProd.map(p=>`<div class="db-bar-row">
-        <div class="db-bar-label">${p.name}</div>
-        <div class="db-bar-track">
-          <div class="db-bar-fill" style="width:${(p.total/maxProd*100).toFixed(0)}%;background:${p.color}"></div>
-          ${p.blocked>0?`<div class="db-bar-blocked" style="width:${(p.blocked/maxProd*100).toFixed(0)}%"></div>`:''}
-        </div>
-        <div class="db-bar-count">${p.total}${p.blocked>0?` <span style="color:#A32D2D;font-size:9px">⚠${p.blocked}</span>`:''}</div>
-      </div>`).join('')}
-
-      <div class="db-section-title" style="margin-top:16px"><i class="ti ti-building-hospital"></i> Par client</div>
-      ${byCli.map(c=>`<div class="db-bar-row">
-        <div class="db-bar-label">${c.name}</div>
-        <div class="db-bar-track">
-          <div class="db-bar-fill" style="width:${(c.total/maxCli*100).toFixed(0)}%;background:${c.color}"></div>
-          ${c.blocked>0?`<div class="db-bar-blocked" style="width:${(c.blocked/maxCli*100).toFixed(0)}%"></div>`:''}
-        </div>
-        <div class="db-bar-count">${c.total}${c.blocked>0?` <span style="color:#A32D2D;font-size:9px">⚠${c.blocked}</span>`:''}</div>
-      </div>`).join('')}
-    </div>
-
-    <div class="db-col">
-      <div class="db-section-title"><i class="ti ti-calendar-event"></i> Prochaines MEPs</div>
-      ${upcoming.length?upcoming.map(r=>miniCard(r)).join(''):`<p class="db-empty">Aucune MEP planifiée</p>`}
-    </div>
-
-    <div class="db-col">
-      <div class="db-section-title" style="color:#A32D2D"><i class="ti ti-alert-triangle"></i> Bloquées (${blockedList.length})</div>
-      ${blockedList.length?blockedList.map(r=>miniCard(r,true)).join(''):`<p class="db-empty" style="color:#004B32">✓ Aucun blocage</p>`}
+      <div class="kpi-sub" style="color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${next?next.name:'Aucune planifiée'}</div>
     </div>
   </div>`;
 }
@@ -419,40 +355,40 @@ function renderDashboard(){
 /* ── SIDEBAR ── */
 function renderSidebar(){
   return`<div class="sidebar">
-    <div class="sb-section">Clients</div>
-    <div class="sb-item${S.filterClient==='all'?' active':''}" onclick="S.filterClient='all';render()">
-      <div class="sb-dot" style="background:#E0DDD6"></div>
-      <span class="sb-name">Tous les clients</span>
-      <span class="sb-count">${releases.length}</span>
+    <div class="sb-top">
+      <input class="sb-search" type="text" placeholder="Rechercher…" value="${S.search}" oninput="S.search=this.value;render()">
     </div>
-    ${clients.map(c=>{
-      const n=releases.filter(r=>r.clientId===c.id).length;
-      const active=S.filterClient===c.id;
-      return`<div class="sb-item${active?' active':''}" onclick="S.filterClient='${c.id}';render()">
-        <div class="sb-dot" style="background:${c.color}"></div>
-        <span class="sb-name">${c.name}</span>
-        <span class="sb-count">${n}</span>
-      </div>`;
-    }).join('')}
-    <div class="sb-divider"></div>
-    <div class="sb-section">Statut</div>
-    <div class="sb-status${S.filterStatus==='all'?' active':''}" onclick="S.filterStatus='all';render()">
-      <span class="sb-status-name">Tous</span>
+    <div class="sb-scroll">
+      <div class="sb-section">Clients</div>
+      <div class="sb-item${S.filterClient==='all'?' active':''}" onclick="S.filterClient='all';render()">
+        <div class="sb-dot" style="background:#E0DDD6"></div>
+        <span class="sb-name">Tous</span>
+        <span class="sb-count">${releases.length}</span>
+      </div>
+      ${clients.map(c=>{const n=releases.filter(r=>r.clientId===c.id).length;const active=S.filterClient===c.id;
+        return`<div class="sb-item${active?' active':''}" onclick="S.filterClient='${c.id}';render()">
+          <div class="sb-dot" style="background:${c.color}"></div>
+          <span class="sb-name">${c.name}</span>
+          <span class="sb-count">${n}</span>
+        </div>`;}).join('')}
+      <div class="sb-divider"></div>
+      <div class="sb-section">Statut</div>
+      <div class="sb-status${S.filterStatus==='all'?' active':''}" onclick="S.filterStatus='all';render()">
+        <span class="sb-status-name" style="font-size:12px">Tous</span>
+      </div>
+      ${STATUSES.map(s=>`<div class="sb-status${S.filterStatus===s.key?' active':''}" onclick="S.filterStatus='${s.key}';render()">
+        <div class="sb-status-dot" style="background:${s.color}"></div>
+        <span class="sb-status-name">${s.label}</span>
+        <span class="sb-count">${releases.filter(r=>r.status===s.key).length}</span>
+      </div>`).join('')}
     </div>
-    ${STATUSES.map(s=>`<div class="sb-status${S.filterStatus===s.key?' active':''}" onclick="S.filterStatus='${s.key}';render()">
-      <div class="sb-status-dot" style="background:${s.color}"></div>
-      <span class="sb-status-name">${s.label}</span>
-      <span class="sb-count">${releases.filter(r=>r.status===s.key).length}</span>
-    </div>`).join('')}
-    <div class="sb-divider"></div>
-    <div class="sb-add-btn" onclick="S.page='settings';render()">
-      <i class="ti ti-settings" style="font-size:14px" aria-hidden="true"></i> Configurer
+    <div class="sb-bottom">
+      <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center" onclick="S.page='settings';render()">
+        <i class="ti ti-settings"></i> Configurer
+      </button>
     </div>
   </div>`;
 }
-
-/* ── STATE calendrier ── */
-let calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
 
 /* ── CALENDRIER ── */
 function renderCalendar(){
@@ -467,21 +403,16 @@ function renderCalendar(){
       const k=rd.getDate();if(!byDay[k])byDay[k]=[];byDay[k].push(r);
     }
   });
-  const labels=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+  const labels=['L','M','M','J','V','S','D'];
   const months=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
   let cells='';
   for(let i=1;i<sd;i++)cells+=`<div class="cal-cell empty"></div>`;
   for(let d=1;d<=dim;d++){
     const isT=today.getDate()===d&&today.getMonth()===calMonth&&today.getFullYear()===calYear;
-    const dr=byDay[d]||[];const show=dr.slice(0,3);const more=dr.length-3;
+    const dr=byDay[d]||[];const show=dr.slice(0,2);const more=dr.length-2;
     cells+=`<div class="cal-cell${isT?' today-col':''}" onclick="clickDay(${d})">
       <div class="day-num${isT?' today':''}">${d}</div>
-      ${show.map(r=>{
-        const c=clientColor(r.clientId);
-        const pids=r.productIds||[];
-        const label=r.name+(pids.length>1?` (${pids.length})`:'');
-        return`<div class="ev-pill" style="background:${c}22;color:${c};border:1px solid ${c}55" onclick="event.stopPropagation();openDetail(${r.id})" title="${r.name}">${label}</div>`;
-      }).join('')}
+      ${show.map(r=>{const c=clientColor(r.clientId);return`<div class="ev-pill" style="background:${c}22;color:${c};border:1px solid ${c}44" onclick="event.stopPropagation();openDetail(${r.id})">${r.name}</div>`;}).join('')}
       ${more>0?`<div class="more-link">+${more}</div>`:''}
     </div>`;
   }
@@ -490,7 +421,7 @@ function renderCalendar(){
       <div class="cal-nav-title">${months[calMonth]} ${calYear}</div>
       <div class="cal-nav-btns">
         <button class="btn btn-icon btn-sm" onclick="prevM()"><i class="ti ti-chevron-left"></i></button>
-        <button class="btn btn-sm" onclick="goToday()" style="font-size:12px">Aujourd'hui</button>
+        <button class="btn btn-sm btn-ghost" onclick="goToday()" style="font-size:11px">Auj.</button>
         <button class="btn btn-icon btn-sm" onclick="nextM()"><i class="ti ti-chevron-right"></i></button>
       </div>
     </div>
@@ -502,87 +433,88 @@ function renderCalendar(){
 /* ── PANNEAU DROIT ── */
 function renderRightPanel(){
   const today=new Date().toISOString().slice(0,10);
-  const upcoming=releases.filter(r=>r.date>=today&&r.status!=='done'&&r.status!=='failed'&&r.status!=='rollback')
-    .sort((a,b)=>a.date.localeCompare(b.date)).slice(0,5);
-  const recent=releases.filter(r=>r.date<today||r.status==='done'||r.status==='failed'||r.status==='rollback')
-    .sort((a,b)=>b.date.localeCompare(a.date)).slice(0,4);
+  const isDash=S.rpTab==='dashboard';
 
-  function rpCard(r){
-    const c=clientColor(r.clientId);
-    const st=stOf(r.status);
+  function mepCard(r,alert=false){
+    const c=clientColor(r.clientId);const st=stOf(r.status);
     const cli=clientById(r.clientId);
-    const d=new Date(r.date+'T00:00:00');
-    const dateStr=d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
-    return`<div class="rp-card" style="border-left-color:${c}" onclick="openDetail(${r.id})">
-      <div class="rp-card-name">${r.name}</div>
-      <div class="rp-card-meta">
-        <span>${dateStr}</span>
-        <span class="rp-tag" style="background:${st.bg};color:${st.color}">${st.label}</span>
-        ${cli?`<span style="color:${c};font-weight:600">${cli.name}</span>`:''}
+    const d=new Date(r.date+'T00:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+    const phases=[{k:'phase2',l:'Ph.2'},{k:'phase4',l:'Ph.4'},{k:'phase6',l:'Ph.6'},{k:'rapports',l:'Rapp.'}];
+    const hasPhases=phases.some(p=>r[p.k]&&r[p.k]!=='');
+    return`<div class="mep-card${alert?' mep-card-alert':''}" style="border-left-color:${c}" onclick="openDetail(${r.id})">
+      <div class="mep-card-top">
+        <div class="mep-card-name">${r.name}</div>
+        <div class="mep-card-date">${d}</div>
       </div>
+      <div class="mep-card-tags">
+        <span class="mc-tag" style="background:${st.bg};color:${st.color}">${st.label}</span>
+        ${cli?`<span class="mc-tag" style="background:${c}18;color:${c}">${cli.name}</span>`:''}
+      </div>
+      ${hasPhases?`<div class="phases-grid" style="margin-top:5px">${phases.map(p=>{const v=r[p.k]||'';const pc=phaseColor(v);return v&&v!==''?`<div class="phase-chip" style="background:${pc.bg};border-color:${pc.border};color:${pc.color}">${p.l}: ${v.replace('🎉 ','')}</div>`:''}).join('')}</div>`:''}
     </div>`;
   }
 
-  return`<div class="right-panel">
-    <div class="rp-section">À venir</div>
-    ${upcoming.length?upcoming.map(rpCard).join(''):`<p style="font-size:12px;color:#ccc;font-style:italic">Aucune MEP planifiée</p>`}
-    <div class="rp-section">Récentes</div>
-    ${recent.length?recent.map(rpCard).join(''):`<p style="font-size:12px;color:#ccc;font-style:italic">Aucune</p>`}
-  </div>`;
-}
+  let content='';
+  if(isDash){
+    const total=releases.length;
+    const blocked=releases.filter(r=>r.status==='failed').length;
+    const planned=releases.filter(r=>r.status==='planned').length;
+    const done=releases.filter(r=>r.status==='done').length;
+    const byProd=products.map(p=>{
+      const t=releases.filter(r=>(r.productIds||[]).includes(p.id)).length;
+      const b=releases.filter(r=>(r.productIds||[]).includes(p.id)&&r.status==='failed').length;
+      return{...p,t,b};
+    }).filter(p=>p.t>0).sort((a,b)=>b.t-a.t);
+    const maxP=Math.max(...byProd.map(p=>p.t),1);
+    const byCli=clients.map(c=>{
+      const t=releases.filter(r=>r.clientId===c.id).length;
+      const b=releases.filter(r=>r.clientId===c.id&&r.status==='failed').length;
+      return{...c,t,b};
+    }).filter(c=>c.t>0).sort((a,b)=>b.t-a.t);
+    const maxC=Math.max(...byCli.map(c=>c.t),1);
 
-/* ── TIMELINE (vue liste) ── */
-function renderTimeline(){
-  const filt=filtered().sort((a,b)=>a.date.localeCompare(b.date));
-  if(!filt.length)return`<div class="empty-state"><i class="ti ti-rocket" aria-hidden="true"></i>${
-    releases.length===0
-      ?`Commencez par ajouter des clients et produits via <span class="empty-strong">Configurer</span>, puis créez votre première MEP.`
-      :`Aucune mise en production pour cette sélection.`
-  }</div>`;
-
-  const byMonth={};
-  filt.forEach(r=>{
-    const d=new Date(r.date+'T00:00:00');
-    const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-    if(!byMonth[key])byMonth[key]=[];
-    byMonth[key].push(r);
-  });
-
-  const monthNames=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-  let html=`<div class="timeline"><div class="tl-line"></div>`;
-  Object.entries(byMonth).forEach(([key,items])=>{
-    const [y,m]=key.split('-');
-    html+=`<div class="tl-month-header">${monthNames[+m-1]} ${y}</div>`;
-    items.forEach(r=>{
-      const st=stOf(r.status);
-      const c=clientColor(r.clientId);
-      const cli=clientById(r.clientId);
-      const pids=r.productIds||[];
-      const d=new Date(r.date+'T00:00:00');
-      const dateStr=`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
-      html+=`<div class="tl-item">
-        <div class="tl-dot" style="background:${c}"></div>
-        <div class="tl-card" style="border-left-color:${c}" onclick="openDetail(${r.id})">
-          <div class="tl-card-top">
-            <div class="tl-card-name">${r.name}</div>
-            <div style="display:flex;align-items:center;gap:6px">
-              <div class="tl-card-date">${dateStr}</div>
-              <button class="tl-edit-btn" onclick="event.stopPropagation();openEdit(${r.id})"><i class="ti ti-edit" aria-hidden="true"></i></button>
-            </div>
-          </div>
-          <div class="tl-card-meta">
-            <span class="tl-tag" style="background:${st.bg};color:${st.color}">${st.label}</span>
-            ${cli?`<span class="tl-tag" style="background:${c}18;color:${c}">${cli.name}</span>`:''}
-            ${pids.map(pid=>{const p=prodById(pid);return p?`<span class="tl-tag" style="background:#F0EDE8;color:#666">${p.name}</span>`:''}).join('')}
-            <span class="tl-tag" style="background:#F8F7F4;color:#aaa">${r.env}</span>
-          </div>
-          ${r.note?`<div class="tl-note">${r.note}</div>`:''}
+    content=`
+      <div class="dash-kpi-grid">
+        <div class="dash-kpi"><div class="dash-kpi-val">${total}</div><div class="dash-kpi-lbl">Total MEPs</div><div class="dash-kpi-sub">${planned} planifiées</div></div>
+        <div class="dash-kpi"><div class="dash-kpi-val" style="color:${blocked>0?'#A32D2D':'#aaa'}">${blocked}</div><div class="dash-kpi-lbl">Bloquées</div><div class="dash-kpi-sub" style="color:${blocked>0?'#A32D2D':'#aaa'}">${blocked>0?'⚠ Action':'Aucune ✓'}</div></div>
+        <div class="dash-kpi"><div class="dash-kpi-val" style="color:#004B32">${done}</div><div class="dash-kpi-lbl">Déployées</div><div class="dash-kpi-sub">${total?Math.round(done/total*100):0}% succès</div></div>
+        <div class="dash-kpi"><div class="dash-kpi-val" style="color:#BA7517">${clients.length}</div><div class="dash-kpi-lbl">Clients</div><div class="dash-kpi-sub">${products.length} produits</div></div>
+      </div>
+      <div class="ds-title"><i class="ti ti-box"></i> Par produit</div>
+      ${byProd.map(p=>`<div class="ds-bar-row">
+        <div class="ds-bar-label">${p.name}</div>
+        <div class="ds-bar-track">
+          <div class="ds-bar-fill" style="width:${(p.t/maxP*100).toFixed(0)}%;background:${p.color}"></div>
+          ${p.b>0?`<div class="ds-bar-blocked" style="width:${(p.b/maxP*100).toFixed(0)}%"></div>`:''}
         </div>
-      </div>`;
-    });
-  });
-  html+=`</div>`;
-  return html;
+        <div class="ds-bar-num">${p.t}${p.b>0?`<span style="color:#A32D2D"> ⚠${p.b}</span>`:''}</div>
+      </div>`).join('')}
+      <div class="ds-divider"></div>
+      <div class="ds-title"><i class="ti ti-building-hospital"></i> Par client</div>
+      ${byCli.map(c=>`<div class="ds-bar-row">
+        <div class="ds-bar-label">${c.name}</div>
+        <div class="ds-bar-track">
+          <div class="ds-bar-fill" style="width:${(c.t/maxC*100).toFixed(0)}%;background:${c.color}"></div>
+          ${c.b>0?`<div class="ds-bar-blocked" style="width:${(c.b/maxC*100).toFixed(0)}%"></div>`:''}
+        </div>
+        <div class="ds-bar-num">${c.t}${c.b>0?`<span style="color:#A32D2D"> ⚠${c.b}</span>`:''}</div>
+      </div>`).join('')}`;
+  } else if(S.rpTab==='upcoming'){
+    const upcoming=releases.filter(r=>r.date>=today).sort((a,b)=>a.date.localeCompare(b.date));
+    content=upcoming.length?upcoming.map(r=>mepCard(r,r.status==='failed')).join(''):`<p style="font-size:12px;color:#ccc;font-style:italic">Aucune MEP à venir</p>`;
+  } else {
+    const blocked=releases.filter(r=>r.status==='failed').sort((a,b)=>a.date.localeCompare(b.date));
+    content=blocked.length?blocked.map(r=>mepCard(r,true)).join(''):`<p style="font-size:12px;color:#004B32;font-weight:500">✓ Aucun blocage</p>`;
+  }
+
+  return`<div class="rightpanel">
+    <div class="rp-tabs">
+      <div class="rp-tab${S.rpTab==='dashboard'?' active':''}" onclick="S.rpTab='dashboard';render()">Dashboard</div>
+      <div class="rp-tab${S.rpTab==='upcoming'?' active':''}" onclick="S.rpTab='upcoming';render()">À venir</div>
+      <div class="rp-tab${S.rpTab==='blocked'?' active':''}" onclick="S.rpTab='blocked';render()">Bloquées</div>
+    </div>
+    <div class="rp-body">${content}</div>
+  </div>`;
 }
 
 /* ── MODAL ── */
@@ -590,31 +522,36 @@ function renderModal(){
   if(!S.modal)return'';
   if(S.modal==='form'){
     const f=S.form;const isEdit=!!S.editId;
-    const picker=products.length?`<div class="prod-picker">${products.map(p=>`<label class="prod-check">
-      <input type="checkbox" ${(f.productIds||[]).includes(p.id)?'checked':''} onchange="toggleProd('${p.id}')">
-      <div class="prod-check-dot" style="background:${p.color}"></div>
-      <span class="prod-check-name">${p.name}</span>
-    </label>`).join('')}</div>`:`<p style="font-size:12px;color:#bbb;padding:6px 0;font-style:italic">Aucun produit — ajoutez-en dans Configurer</p>`;
+    const phases=[{k:'phase2',l:'Phase 2'},{k:'phase4',l:'Phase 4'},{k:'phase6',l:'Phase 6 – RFV'},{k:'rapports',l:'Rapports'}];
     return`<div class="modal-overlay" onclick="cModal(event)"><div class="modal" onclick="event.stopPropagation()">
-      <div class="modal-title">${isEdit?'Modifier la MEP':'Nouvelle mise en production'}</div>
+      <div class="modal-title">${isEdit?'Modifier':'Nouvelle mise en production'}</div>
       <span class="f-label">Nom / version</span>
-      <input class="f-input" type="text" value="${f.name}" oninput="sf('name',this.value)" placeholder="Ex: Déploiement v2.5">
+      <input class="f-input" type="text" value="${f.name}" oninput="sf('name',this.value)" placeholder="Ex: HIP2D v2.4">
       <span class="f-label">Client</span>
-      ${clients.length?`<select class="f-input" onchange="sf('clientId',this.value)">${clients.map(c=>`<option value="${c.id}"${f.clientId===c.id?' selected':''}>${c.name}</option>`).join('')}</select>`:`<p style="font-size:12px;color:#bbb;padding:6px 0;font-style:italic">Ajoutez des clients dans Configurer</p>`}
-      <span class="f-label">Produits <span style="font-weight:400;color:#ccc">(un ou plusieurs)</span></span>
-      ${picker}
-      <span class="f-label">Date de mise en production</span>
+      ${clients.length?`<select class="f-input" onchange="sf('clientId',this.value)">${clients.map(c=>`<option value="${c.id}"${f.clientId===c.id?' selected':''}>${c.name}</option>`).join('')}</select>`:`<p style="font-size:11px;color:#bbb;padding:4px 0">Ajoutez des clients dans Configurer</p>`}
+      <span class="f-label">Produits</span>
+      ${products.length?`<div class="prod-picker">${products.map(p=>`<label class="prod-check"><input type="checkbox" ${(f.productIds||[]).includes(p.id)?'checked':''} onchange="toggleProd('${p.id}')"><div class="prod-check-dot" style="background:${p.color}"></div><span class="prod-check-name">${p.name}</span></label>`).join('')}</div>`:`<p style="font-size:11px;color:#bbb;padding:4px 0">Ajoutez des produits dans Configurer</p>`}
+      <span class="f-label">Date MEP</span>
       <input class="f-input" type="date" value="${f.date}" onchange="sf('date',this.value)">
       <span class="f-label">Environnement</span>
       <select class="f-input" onchange="sf('env',this.value)">${['Staging','Pre-prod','Production'].map(e=>`<option${f.env===e?' selected':''}>${e}</option>`).join('')}</select>
       <span class="f-label">Statut</span>
       <select class="f-input" onchange="sf('status',this.value)">${STATUSES.map(s=>`<option value="${s.key}"${f.status===s.key?' selected':''}>${s.label}</option>`).join('')}</select>
-      <span class="f-label">Note</span>
-      <textarea class="f-textarea" oninput="sf('note',this.value)" placeholder="Commentaire, lien JIRA...">${f.note||''}</textarea>
+      <span class="f-label">Note / Action prioritaire</span>
+      <textarea class="f-textarea" oninput="sf('note',this.value)" placeholder="Ex: Passer les tests de vérification…">${f.note||''}</textarea>
+      <span class="f-label">État des phases</span>
+      <div class="phases-form">
+        ${phases.map(p=>`<div class="phase-select-wrap">
+          <div class="phase-select-lbl">${p.l}</div>
+          <select class="f-input" style="font-size:11px;padding:6px 8px" onchange="sf('${p.k}',this.value)">
+            ${PHASE_VALS.map(v=>`<option value="${v}"${f[p.k]===v?' selected':''}>${v||'—'}</option>`).join('')}
+          </select>
+        </div>`).join('')}
+      </div>
       <div class="modal-actions">
-        <button class="btn" onclick="cModal()">Annuler</button>
-        ${isEdit?`<button class="btn" style="color:#E24B4A;border-color:rgba(226,75,74,0.4)" onclick="delRelease(${S.editId})"><i class="ti ti-trash"></i> Supprimer</button>`:''}
-        <button class="btn btn-primary" onclick="saveRelease()"><i class="ti ti-check"></i> ${isEdit?'Enregistrer':'Ajouter'}</button>
+        <button class="btn btn-sm" onclick="cModal()">Annuler</button>
+        ${isEdit?`<button class="btn btn-sm" style="color:#E24B4A;border-color:rgba(226,75,74,0.4)" onclick="delRelease(${S.editId})"><i class="ti ti-trash"></i> Supprimer</button>`:''}
+        <button class="btn btn-primary btn-sm" onclick="saveRelease()"><i class="ti ti-check"></i> ${isEdit?'Enregistrer':'Ajouter'}</button>
       </div>
     </div></div>`;
   }
@@ -622,119 +559,88 @@ function renderModal(){
     const r=releases.find(x=>x.id===S.detailId);if(!r)return'';
     const st=stOf(r.status);const c=clientColor(r.clientId);
     const cli=clientById(r.clientId);const pids=r.productIds||[];
+    const phases=[{k:'phase2',l:'Phase 2'},{k:'phase4',l:'Phase 4'},{k:'phase6',l:'Phase 6 – RFV'},{k:'rapports',l:'Rapports'}];
+    const hasPhases=phases.some(p=>r[p.k]&&r[p.k]!=='');
     return`<div class="modal-overlay" onclick="cModal(event)"><div class="modal" onclick="event.stopPropagation()">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
         <div class="modal-title" style="margin:0">${r.name}</div>
         <button class="btn btn-sm" onclick="openEdit(${r.id})"><i class="ti ti-edit"></i> Modifier</button>
       </div>
-      <div style="display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:99px;font-size:12px;font-weight:600;margin-bottom:14px;background:${st.bg};color:${st.color}">
-        <span style="width:8px;height:8px;border-radius:50%;background:${st.color};display:inline-block"></span>${st.label}
+      <div style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:600;margin-bottom:12px;background:${st.bg};color:${st.color}">
+        <span style="width:7px;height:7px;border-radius:50%;background:${st.color};display:inline-block"></span>${st.label}
       </div>
       <div class="detail-row"><span class="detail-label">Client</span>${cli?`<span class="tag" style="background:${c}18;color:${c}">${cli.name}</span>`:'-'}</div>
-      <div class="detail-row"><span class="detail-label">Produits</span><div class="prod-tags">${prodTagsHtml(pids)}</div></div>
+      <div class="detail-row"><span class="detail-label">Produits</span><div style="display:flex;gap:4px;flex-wrap:wrap">${pids.map(pid=>{const p=prodById(pid);return p?`<span class="tag" style="background:#F0EDE8;color:#555">${p.name}</span>`:''}).join('')||'-'}</div></div>
       <div class="detail-row"><span class="detail-label">Date</span><span>${new Date(r.date+'T00:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</span></div>
-      <div class="detail-row"><span class="detail-label">Environnement</span><span>${r.env}</span></div>
-      ${r.note?`<div class="detail-row"><span class="detail-label">Note</span><span style="color:#888;font-size:13px">${r.note}</span></div>`:''}
-      <div class="modal-actions"><button class="btn" onclick="cModal()">Fermer</button></div>
+      <div class="detail-row"><span class="detail-label">Env.</span><span>${r.env}</span></div>
+      ${r.note?`<div class="detail-row"><span class="detail-label">Note</span><span style="color:#666;font-size:12px">${r.note}</span></div>`:''}
+      ${hasPhases?`<div class="phases-section">
+        <div class="phases-title">État des phases</div>
+        <div class="phases-row">${phases.map(p=>{const v=r[p.k]||'';const pc=phaseColor(v);return`<div class="phase-item" style="background:${pc.bg};border-color:${pc.border}">
+          <div class="phase-item-label" style="color:${pc.color}">${p.l}</div>
+          <div class="phase-item-val" style="color:${pc.color}">${v||'—'}</div>
+        </div>`;}).join('')}</div>
+      </div>`:''}
+      <div class="modal-actions"><button class="btn btn-sm" onclick="cModal()">Fermer</button></div>
     </div></div>`;
   }
   return'';
 }
 
-/* ── SETTINGS ── */
-function renderSettings(){
-  const tab=S.stab;
-  const usageC=id=>releases.filter(r=>r.clientId===id).length;
-  const usageP=id=>releases.filter(r=>(r.productIds||[]).includes(id)).length;
-  let body='';
-  if(tab==='clients'){
-    body=`<div class="section-title">Clients (${clients.length})</div>
-    <div class="entity-list">${clients.map(c=>{
-      const n=usageC(c.id);
-      if(S.editingClientId===c.id)return`<div class="entity-row">
-        <input type="color" class="cpick" value="${S.editingClientColor}" oninput="S.editingClientColor=this.value">
-        <div class="inline-edit-row">
-          <input class="inline-edit-input" type="text" value="${S.editingClientName}" oninput="S.editingClientName=this.value" onkeydown="if(event.key==='Enter')saveClient('${c.id}')">
-          <button class="btn btn-primary btn-sm" onclick="saveClient('${c.id}')"><i class="ti ti-check"></i> OK</button>
-          <button class="btn btn-sm" onclick="S.editingClientId=null;render()"><i class="ti ti-x"></i></button>
-        </div>
-      </div>`;
-      return`<div class="entity-row">
-        <div class="e-dot" style="background:${c.color}"></div>
-        <span class="e-name">${c.name}</span><span class="e-count">${n} MEP${n>1?'s':''}</span>
-        <div class="e-actions">
-          <button class="act-edit" onclick="startEditClient('${c.id}')"><i class="ti ti-pencil"></i></button>
-          <button class="act-del" onclick="deleteClient('${c.id}')"><i class="ti ti-trash"></i></button>
-        </div>
-      </div>`;
-    }).join('')||`<p class="no-entries">Aucun client</p>`}</div>
-    <div class="add-zone"><div class="add-zone-label">Ajouter un client</div>
-      <div class="add-row">
-        <input type="color" class="cpick" value="${S.newClientColor}" oninput="S.newClientColor=this.value">
-        <input class="add-input" type="text" value="${S.newClientName}" oninput="S.newClientName=this.value" placeholder="Nom du client" onkeydown="if(event.key==='Enter')addClient()">
-        <button class="btn btn-primary" onclick="addClient()"><i class="ti ti-plus"></i> Ajouter</button>
-      </div>
-    </div>`;
-  } else if(tab==='products'){
-    body=`<div class="section-title">Produits (${products.length})</div>
-    <div class="entity-list">${products.map(p=>{
-      const n=usageP(p.id);
-      if(S.editingProdId===p.id)return`<div class="entity-row">
-        <input type="color" class="cpick" value="${S.editingProdColor}" oninput="S.editingProdColor=this.value">
-        <div class="inline-edit-row">
-          <input class="inline-edit-input" type="text" value="${S.editingProdName}" oninput="S.editingProdName=this.value" onkeydown="if(event.key==='Enter')saveProd('${p.id}')">
-          <button class="btn btn-primary btn-sm" onclick="saveProd('${p.id}')"><i class="ti ti-check"></i> OK</button>
-          <button class="btn btn-sm" onclick="S.editingProdId=null;render()"><i class="ti ti-x"></i></button>
-        </div>
-      </div>`;
-      return`<div class="entity-row">
-        <div class="e-dot" style="background:${p.color}"></div>
-        <span class="e-name">${p.name}</span><span class="e-count">${n} MEP${n>1?'s':''}</span>
-        <div class="e-actions">
-          <button class="act-edit" onclick="startEditProd('${p.id}')"><i class="ti ti-pencil"></i></button>
-          <button class="act-del" onclick="deleteProd('${p.id}')"><i class="ti ti-trash"></i></button>
-        </div>
-      </div>`;
-    }).join('')||`<p class="no-entries">Aucun produit</p>`}</div>
-    <div class="add-zone"><div class="add-zone-label">Ajouter un produit</div>
-      <div class="add-row">
-        <input type="color" class="cpick" value="${S.newProdColor}" oninput="S.newProdColor=this.value">
-        <input class="add-input" type="text" value="${S.newProdName}" oninput="S.newProdName=this.value" placeholder="Nom du produit" onkeydown="if(event.key==='Enter')addProd()">
-        <button class="btn btn-primary" onclick="addProd()"><i class="ti ti-plus"></i> Ajouter</button>
-      </div>
-    </div>`;
-  } else {
-    body=`<div class="section-title">Statuts</div>
-    <div class="entity-list">${STATUSES.map(s=>`<div class="entity-row">
-      <div class="e-dot" style="background:${s.color}"></div>
-      <span class="e-name">${s.label}</span>
-      <span class="e-count">${releases.filter(r=>r.status===s.key).length} MEP</span>
-    </div>`).join('')}</div>
-    <p style="font-size:12px;color:#bbb;font-style:italic">Statuts fixes — définis par le processus MDR.</p>`;
-  }
-  return`<div class="settings-wrap">
-    <div class="settings-panel">
-      <div class="stabs">
-        <div class="stab${tab==='clients'?' active':''}" onclick="S.stab='clients';render()"><i class="ti ti-building-hospital"></i> Clients</div>
-        <div class="stab${tab==='products'?' active':''}" onclick="S.stab='products';render()"><i class="ti ti-box"></i> Produits</div>
-        <div class="stab${tab==='statuses'?' active':''}" onclick="S.stab='statuses';render()"><i class="ti ti-flag"></i> Statuts</div>
-      </div>
-      <div class="sbody">${body}</div>
-      <div class="settings-footer">
-        <span style="font-size:12px;color:#bbb"><i class="ti ti-cloud" style="vertical-align:-2px;margin-right:5px"></i>Synchronisé avec Supabase</span>
-        <button class="btn btn-ghost btn-sm" onclick="loadAll()"><i class="ti ti-refresh"></i> Actualiser</button>
-      </div>
+/* ── SETTINGS inline ── */
+function renderSettingsInline(){
+  return`<div style="max-width:600px;margin:0 auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="font-family:'Sora',sans-serif;font-size:15px;font-weight:600">Configuration</div>
+      <button class="btn btn-ghost btn-sm" onclick="S.page='main';render()"><i class="ti ti-arrow-left"></i> Retour</button>
+    </div>
+    <div class="settings-panel-inline">${renderSettingsBody()}</div>
+    <div style="margin-top:12px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:11px;color:#bbb"><i class="ti ti-cloud" style="vertical-align:-2px;margin-right:4px"></i>Synchronisé avec Supabase</span>
+      <button class="btn btn-ghost btn-sm" onclick="loadAll()"><i class="ti ti-refresh"></i> Actualiser</button>
     </div>
   </div>`;
 }
 
+function renderSettingsBody(){
+  const tab=S.stab;
+  const usageC=id=>releases.filter(r=>r.clientId===id).length;
+  const usageP=id=>releases.filter(r=>(r.productIds||[]).includes(id)).length;
+  let body='';
+  const tabBar=`<div class="stabs" style="margin-bottom:16px;border:1px solid #E5E2DB;border-radius:8px;overflow:hidden">
+    <div class="stab${tab==='clients'?' active':''}" onclick="S.stab='clients';render()">Clients</div>
+    <div class="stab${tab==='products'?' active':''}" onclick="S.stab='products';render()">Produits</div>
+    <div class="stab${tab==='statuses'?' active':''}" onclick="S.stab='statuses';render()">Statuts</div>
+  </div>`;
+  if(tab==='clients'){
+    body=`<div class="section-title">Clients (${clients.length})</div>
+    <div class="entity-list">${clients.map(c=>{const n=usageC(c.id);
+      if(S.editingClientId===c.id)return`<div class="entity-row"><input type="color" class="cpick" value="${S.editingClientColor}" oninput="S.editingClientColor=this.value"><div class="inline-edit-row"><input class="inline-edit-input" type="text" value="${S.editingClientName}" oninput="S.editingClientName=this.value" onkeydown="if(event.key==='Enter')saveClient('${c.id}')"><button class="btn btn-primary btn-sm" onclick="saveClient('${c.id}')">OK</button><button class="btn btn-sm" onclick="S.editingClientId=null;render()">✕</button></div></div>`;
+      return`<div class="entity-row"><div class="e-dot" style="background:${c.color}"></div><span class="e-name">${c.name}</span><span class="e-count">${n} MEP${n>1?'s':''}</span><div class="e-actions"><button class="act-edit" onclick="startEditClient('${c.id}')"><i class="ti ti-pencil"></i></button><button class="act-del" onclick="deleteClient('${c.id}')"><i class="ti ti-trash"></i></button></div></div>`;
+    }).join('')||`<p class="no-entries">Aucun client</p>`}</div>
+    <div class="add-zone"><div class="add-zone-label">Ajouter</div><div class="add-row"><input type="color" class="cpick" value="${S.newClientColor}" oninput="S.newClientColor=this.value"><input class="add-input" type="text" value="${S.newClientName}" oninput="S.newClientName=this.value" placeholder="Nom du client" onkeydown="if(event.key==='Enter')addClient()"><button class="btn btn-primary btn-sm" onclick="addClient()"><i class="ti ti-plus"></i> Ajouter</button></div></div>`;
+  } else if(tab==='products'){
+    body=`<div class="section-title">Produits (${products.length})</div>
+    <div class="entity-list">${products.map(p=>{const n=usageP(p.id);
+      if(S.editingProdId===p.id)return`<div class="entity-row"><input type="color" class="cpick" value="${S.editingProdColor}" oninput="S.editingProdColor=this.value"><div class="inline-edit-row"><input class="inline-edit-input" type="text" value="${S.editingProdName}" oninput="S.editingProdName=this.value" onkeydown="if(event.key==='Enter')saveProd('${p.id}')"><button class="btn btn-primary btn-sm" onclick="saveProd('${p.id}')">OK</button><button class="btn btn-sm" onclick="S.editingProdId=null;render()">✕</button></div></div>`;
+      return`<div class="entity-row"><div class="e-dot" style="background:${p.color}"></div><span class="e-name">${p.name}</span><span class="e-count">${n} MEP${n>1?'s':''}</span><div class="e-actions"><button class="act-edit" onclick="startEditProd('${p.id}')"><i class="ti ti-pencil"></i></button><button class="act-del" onclick="deleteProd('${p.id}')"><i class="ti ti-trash"></i></button></div></div>`;
+    }).join('')||`<p class="no-entries">Aucun produit</p>`}</div>
+    <div class="add-zone"><div class="add-zone-label">Ajouter</div><div class="add-row"><input type="color" class="cpick" value="${S.newProdColor}" oninput="S.newProdColor=this.value"><input class="add-input" type="text" value="${S.newProdName}" oninput="S.newProdName=this.value" placeholder="Nom du produit" onkeydown="if(event.key==='Enter')addProd()"><button class="btn btn-primary btn-sm" onclick="addProd()"><i class="ti ti-plus"></i> Ajouter</button></div></div>`;
+  } else {
+    body=`<div class="section-title">Statuts disponibles</div>
+    <div class="entity-list">${STATUSES.map(s=>`<div class="entity-row"><div class="e-dot" style="background:${s.color}"></div><span class="e-name">${s.label}</span><span class="e-count">${releases.filter(r=>r.status===s.key).length} MEP</span></div>`).join('')}</div>
+    <p style="font-size:11px;color:#bbb;font-style:italic">Statuts fixes — process MDR.</p>`;
+  }
+  return tabBar+body;
+}
+
 function exportCSV(){
-  if(!releases.length){alert('Aucune MEP à exporter');return}
-  const rows=[['Nom','Client','Produits','Date','Environnement','Statut','Note']];
+  if(!releases.length){alert('Aucune MEP');return}
+  const rows=[['Nom','Client','Produits','Date','Env','Statut','Note','Phase2','Phase4','Phase6','Rapports']];
   [...releases].sort((a,b)=>a.date.localeCompare(b.date)).forEach(r=>{
     const cli=clientById(r.clientId);const st=stOf(r.status);
-    const prods=(r.productIds||[]).map(pid=>{const p=prodById(pid);return p?p.name:''}).filter(Boolean).join(' | ');
-    rows.push([r.name,cli?cli.name:'',prods,r.date,r.env,st.label,r.note||'']);
+    const prods=(r.productIds||[]).map(pid=>{const p=prodById(pid);return p?p.name:''}).filter(Boolean).join('|');
+    rows.push([r.name,cli?cli.name:'',prods,r.date,r.env,st.label,r.note||'',r.phase2||'',r.phase4||'',r.phase6||'',r.rapports||'']);
   });
   const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
   const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
@@ -743,52 +649,17 @@ function exportCSV(){
   URL.revokeObjectURL(url);
 }
 
-function render(){
-  const app=document.getElementById('app');
-  if(S.loading){
-    app.innerHTML=`<div class="loading-screen"><div class="loading-dots"><span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span></div>Chargement…</div>`;
-    return;
-  }
-
-  const topbar=`<div class="topbar">
-    <div>
-      <div class="logo">One<em>Ortho</em></div>
-      <div class="logo-sub">${S.page==='settings'?'Configuration':'Suivi des mises en production'}</div>
-    </div>
-    <div class="topbar-actions">
-      ${S.page==='settings'
-        ?`<button class="btn btn-ghost" onclick="S.page='main';render()"><i class="ti ti-arrow-left"></i> Retour</button>`
-        :`<button class="btn btn-ghost" onclick="exportCSV()"><i class="ti ti-download"></i> <span class="lbl">Export CSV</span></button>
-          <button class="btn btn-primary" onclick="openAdd()"><i class="ti ti-plus"></i> Nouvelle MEP</button>`
-      }
-    </div>
-  </div>`;
-
-  if(S.page==='settings'){
-    app.innerHTML=topbar+renderSettings()+renderModal();
-    return;
-  }
-
-  app.innerHTML=topbar+renderKpis()+`<div class="body">
-    ${renderSidebar()}
-    <div class="main">
-      ${renderCalendar()}
-    </div>
-    ${renderRightPanel()}
-  </div>`+renderModal();
-}
-
 function prevM(){if(calMonth===0){calMonth=11;calYear--}else calMonth--;render()}
 function nextM(){if(calMonth===11){calMonth=0;calYear++}else calMonth++;render()}
 function goToday(){calYear=new Date().getFullYear();calMonth=new Date().getMonth();render()}
 function clickDay(d){
   const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-  S.form={name:'',productIds:[],clientId:clients[0]?.id||'',date:ds,env:'Production',status:'planned',note:''};
+  S.form={name:'',productIds:[],clientId:clients[0]?.id||'',date:ds,env:'Production',status:'planned',note:'',phase2:'',phase4:'',phase6:'',rapports:''};
   S.editId=null;S.modal='form';render();
 }
 function openAdd(){
   const today=new Date().toISOString().slice(0,10);
-  S.form={name:'',productIds:[],clientId:clients[0]?.id||'',date:today,env:'Production',status:'planned',note:''};
+  S.form={name:'',productIds:[],clientId:clients[0]?.id||'',date:today,env:'Production',status:'planned',note:'',phase2:'',phase4:'',phase6:'',rapports:''};
   S.editId=null;S.modal='form';render();
 }
 function openEdit(id){const r=releases.find(x=>x.id===id);S.form={...r,productIds:[...(r.productIds||[])]};S.editId=id;S.modal='form';render()}
@@ -801,33 +672,27 @@ async function saveRelease(){
   if(!S.form.clientId&&clients.length)S.form.clientId=clients[0].id;
   const id=S.editId||Date.now();
   const ok=await sbUpsert('releases',releaseToDb({...S.form,id}));
-  if(!ok){alert('Erreur lors de la sauvegarde');return}
+  if(!ok){alert('Erreur sauvegarde');return}
   if(S.editId){const i=releases.findIndex(x=>x.id===S.editId);releases[i]={...S.form,id:S.editId}}
   else releases.push({...S.form,id});
   S.modal=null;render();
 }
 async function delRelease(id){
-  const ok=await sbDelete('releases','id',id);
-  if(!ok){alert('Erreur');return}
+  if(!await sbDelete('releases','id',id)){alert('Erreur');return}
   releases=releases.filter(x=>x.id!==id);S.modal=null;render();
 }
 function startEditProd(id){const p=products.find(x=>x.id===id);S.editingProdId=id;S.editingProdName=p.name;S.editingProdColor=p.color;render()}
 async function saveProd(id){
   const name=S.editingProdName.trim();if(!name)return;
-  const ok=await sbPatch('products','id',id,{name,color:S.editingProdColor});
-  if(!ok){alert('Erreur');return}
+  if(!await sbPatch('products','id',id,{name,color:S.editingProdColor})){alert('Erreur');return}
   const i=products.findIndex(p=>p.id===id);products[i]={...products[i],name,color:S.editingProdColor};
   S.editingProdId=null;render();
 }
 async function deleteProd(id){
   const n=releases.filter(r=>(r.productIds||[]).includes(id)).length;
-  if(!confirm(n>0?`Ce produit est lié à ${n} MEP(s). Le retirer ?`:'Supprimer ?'))return;
-  for(const r of releases.filter(r=>(r.productIds||[]).includes(id))){
-    const ids=r.productIds.filter(x=>x!==id);
-    await sbPatch('releases','id',r.id,{product_ids:ids});r.productIds=ids;
-  }
-  const ok=await sbDelete('products','id',id);
-  if(!ok){alert('Erreur');return}
+  if(!confirm(n>0?`Lié à ${n} MEP(s). Supprimer ?`:'Supprimer ?'))return;
+  for(const r of releases.filter(r=>(r.productIds||[]).includes(id))){const ids=r.productIds.filter(x=>x!==id);await sbPatch('releases','id',r.id,{product_ids:ids});r.productIds=ids;}
+  if(!await sbDelete('products','id',id)){alert('Erreur');return}
   products=products.filter(p=>p.id!==id);render();
 }
 async function addProd(){
@@ -839,14 +704,13 @@ async function addProd(){
 function startEditClient(id){const c=clients.find(x=>x.id===id);S.editingClientId=id;S.editingClientName=c.name;S.editingClientColor=c.color;render()}
 async function saveClient(id){
   const name=S.editingClientName.trim();if(!name)return;
-  const ok=await sbPatch('clients','id',id,{name,color:S.editingClientColor});
-  if(!ok){alert('Erreur');return}
+  if(!await sbPatch('clients','id',id,{name,color:S.editingClientColor})){alert('Erreur');return}
   const i=clients.findIndex(c=>c.id===id);clients[i]={...clients[i],name,color:S.editingClientColor};
   S.editingClientId=null;render();
 }
 async function deleteClient(id){
   const n=releases.filter(r=>r.clientId===id).length;
-  if(!confirm(n>0?`Ce client est lié à ${n} MEP(s). Supprimer quand même ?`:'Supprimer ?'))return;
+  if(!confirm(n>0?`Lié à ${n} MEP(s). Supprimer ?`:'Supprimer ?'))return;
   for(const r of releases.filter(r=>r.clientId===id))await sbDelete('releases','id',r.id);
   if(!await sbDelete('clients','id',id)){alert('Erreur');return}
   releases=releases.filter(r=>r.clientId!==id);
