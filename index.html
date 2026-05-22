@@ -195,6 +195,14 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:
 .loading-dot:nth-child(3){animation-delay:.4s}
 @keyframes pulse{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
 
+/* ── BARRE PHASES ── */
+.phase-bar{display:flex;align-items:flex-end;gap:3px;margin-top:7px;padding-top:7px;border-top:1px solid #F0EDE6}
+.phase-step-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+.phase-seg{width:100%;height:4px;border-radius:99px}
+.phase-seg-lbl{font-size:8px;color:#bbb;font-weight:500;white-space:nowrap}
+.phase-connector{width:3px;height:2px;background:#E8E5DE;margin-bottom:7px}
+.phase-step-wrap{position:relative}
+
 /* Scrollbar fine */
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -238,17 +246,45 @@ const STATUSES=[
 ];
 const PHASE_VALS=['','À faire','En cours','A exporter','A signer','Signé','N/A'];
 function phaseColor(v){
-  if(!v||v==='')return{bg:'#F8F7F4',border:'#E0DDD6',color:'#bbb'};
-  if(v==='Signé'||v==='🎉 Signé')return{bg:'#e1f5ee',border:'#A8D9C0',color:'#004B32'};
-  if(v==='À faire'||v==='A faire')return{bg:'#faeeda',border:'#F0C87A',color:'#BA7517'};
-  if(v==='En cours')return{bg:'#e6f1fb',border:'#A8C8F0',color:'#378ADD'};
-  if(v==='A exporter')return{bg:'#f5e8f2',border:'#D4AECE',color:'#702D5A'};
-  if(v==='A signer')return{bg:'#fff3cd',border:'#F0C87A',color:'#856404'};
-  if(v==='N/A')return{bg:'#F8F7F4',border:'#E0DDD6',color:'#bbb'};
-  return{bg:'#F8F7F4',border:'#E0DDD6',color:'#888'};
+  if(!v||v==='')return{bg:'#F8F7F4',border:'#E0DDD6',color:'#bbb',seg:'#E8E5DE'};
+  if(v==='Signé'||v==='🎉 Signé')return{bg:'#e1f5ee',border:'#A8D9C0',color:'#004B32',seg:'#004B32'};
+  if(v==='À faire'||v==='A faire')return{bg:'#faeeda',border:'#F0C87A',color:'#BA7517',seg:'#E24B4A'};
+  if(v==='En cours')return{bg:'#e6f1fb',border:'#A8C8F0',color:'#378ADD',seg:'#EF9F27'};
+  if(v==='A exporter')return{bg:'#f5e8f2',border:'#D4AECE',color:'#702D5A',seg:'#9F8AEA'};
+  if(v==='A signer')return{bg:'#fff3cd',border:'#F0C87A',color:'#856404',seg:'#EF9F27'};
+  if(v==='N/A')return{bg:'#F8F7F4',border:'#E0DDD6',color:'#bbb',seg:'#E8E5DE'};
+  return{bg:'#F8F7F4',border:'#E0DDD6',color:'#888',seg:'#E8E5DE'};
 }
 
 function stOf(k){return STATUSES.find(s=>s.key===k)||STATUSES[0]}
+
+function renderPhaseBar(r){
+  const phases=[
+    {k:'phase2',l:'Ph.2',full:'Phase 2'},
+    {k:'phase4',l:'Ph.4',full:'Phase 4'},
+    {k:'phase6',l:'Ph.6',full:'Phase 6'},
+    {k:'rapports',l:'Rapp.',full:'Rapports'}
+  ];
+  const hasAny=phases.some(p=>r[p.k]&&r[p.k]!=='');
+  if(!hasAny)return'';
+  const uid='pb'+r.id;
+  const segs=phases.map((p,i)=>{
+    const v=r[p.k]||'';
+    const pc=phaseColor(v);
+    const label=v?v.replace('🎉 ',''):'—';
+    const tipText=`${p.full} : ${label}`;
+    const tipColor=pc.seg==='#E8E5DE'?'#bbb':pc.seg;
+    return`${i>0?`<div class="phase-connector"></div>`:''}
+    <div class="phase-step-wrap"
+      onmouseenter="var el=document.getElementById('${uid}');if(el){el.textContent='${tipText}';el.style.color='${tipColor}'}"
+      onmouseleave="var el=document.getElementById('${uid}');if(el){el.textContent='';el.style.color='#bbb'}">
+      <div class="phase-seg" style="background:${pc.seg}"></div>
+      <div class="phase-seg-lbl">${p.l}</div>
+    </div>`;
+  }).join('');
+  return`<div class="phase-bar">${segs}</div>
+  <div id="${uid}" style="font-size:10px;font-weight:500;color:#bbb;min-height:14px;margin-top:3px;transition:color .1s;text-align:center"></div>`;
+}
 let products=[],clients=[],releases=[];
 function prodById(id){return products.find(p=>p.id===id)}
 function clientById(id){return clients.find(c=>c.id===id)}
@@ -439,8 +475,6 @@ function renderRightPanel(){
     const c=clientColor(r.clientId);const st=stOf(r.status);
     const cli=clientById(r.clientId);
     const d=new Date(r.date+'T00:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
-    const phases=[{k:'phase2',l:'Ph.2'},{k:'phase4',l:'Ph.4'},{k:'phase6',l:'Ph.6'},{k:'rapports',l:'Rapp.'}];
-    const hasPhases=phases.some(p=>r[p.k]&&r[p.k]!=='');
     return`<div class="mep-card${alert?' mep-card-alert':''}" style="border-left-color:${c}" onclick="openDetail(${r.id})">
       <div class="mep-card-top">
         <div class="mep-card-name">${r.name}</div>
@@ -450,7 +484,7 @@ function renderRightPanel(){
         <span class="mc-tag" style="background:${st.bg};color:${st.color}">${st.label}</span>
         ${cli?`<span class="mc-tag" style="background:${c}18;color:${c}">${cli.name}</span>`:''}
       </div>
-      ${hasPhases?`<div class="phases-grid" style="margin-top:5px">${phases.map(p=>{const v=r[p.k]||'';const pc=phaseColor(v);return v&&v!==''?`<div class="phase-chip" style="background:${pc.bg};border-color:${pc.border};color:${pc.color}">${p.l}: ${v.replace('🎉 ','')}</div>`:''}).join('')}</div>`:''}
+      ${renderPhaseBar(r)}
     </div>`;
   }
 
@@ -501,7 +535,10 @@ function renderRightPanel(){
       </div>`).join('')}`;
   } else if(S.rpTab==='upcoming'){
     const upcoming=releases.filter(r=>r.date>=today).sort((a,b)=>a.date.localeCompare(b.date));
-    content=upcoming.length?upcoming.map(r=>mepCard(r,r.status==='failed')).join(''):`<p style="font-size:12px;color:#ccc;font-style:italic">Aucune MEP à venir</p>`;
+    const legend=`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;padding:6px 8px;background:#F8F7F4;border-radius:6px">
+      ${[['Signé','#004B32'],['En cours','#EF9F27'],['À faire','#E24B4A'],['A exporter','#9F8AEA'],['A signer','#EF9F27'],['N/A','#E8E5DE']].map(([l,c])=>`<div style="display:flex;align-items:center;gap:3px"><div style="width:8px;height:4px;border-radius:99px;background:${c}"></div><span style="font-size:9px;color:#aaa;font-weight:500">${l}</span></div>`).join('')}
+    </div>`;
+    content=legend+(upcoming.length?upcoming.map(r=>mepCard(r,r.status==='failed')).join(''):`<p style="font-size:12px;color:#ccc;font-style:italic">Aucune MEP à venir</p>`);
   } else {
     const blocked=releases.filter(r=>r.status==='failed').sort((a,b)=>a.date.localeCompare(b.date));
     content=blocked.length?blocked.map(r=>mepCard(r,true)).join(''):`<p style="font-size:12px;color:#004B32;font-weight:500">✓ Aucun blocage</p>`;
@@ -574,11 +611,11 @@ function renderModal(){
       <div class="detail-row"><span class="detail-label">Date</span><span>${new Date(r.date+'T00:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</span></div>
       <div class="detail-row"><span class="detail-label">Env.</span><span>${r.env}</span></div>
       ${r.note?`<div class="detail-row"><span class="detail-label">Note</span><span style="color:#666;font-size:12px">${r.note}</span></div>`:''}
-      ${hasPhases?`<div class="phases-section">
-        <div class="phases-title">État des phases</div>
-        <div class="phases-row">${phases.map(p=>{const v=r[p.k]||'';const pc=phaseColor(v);return`<div class="phase-item" style="background:${pc.bg};border-color:${pc.border}">
-          <div class="phase-item-label" style="color:${pc.color}">${p.l}</div>
-          <div class="phase-item-val" style="color:${pc.color}">${v||'—'}</div>
+      ${hasPhases?`<div style="margin-top:10px;padding-top:10px;border-top:1px solid #F0EDE6">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#bbb;margin-bottom:10px">État des phases</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">${phases.map(p=>{const v=r[p.k]||'';const pc=phaseColor(v);return`<div style="padding:5px 8px;border-radius:5px;border:1px solid ${pc.border};background:${pc.bg}">
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px;color:${pc.color}">${p.l}</div>
+          <div style="display:flex;align-items:center;gap:5px"><div style="width:8px;height:8px;border-radius:50%;background:${pc.seg};flex-shrink:0"></div><div style="font-size:11px;font-weight:500;color:${pc.color}">${v||'—'}</div></div>
         </div>`;}).join('')}</div>
       </div>`:''}
       <div class="modal-actions"><button class="btn btn-sm" onclick="cModal()">Fermer</button></div>
